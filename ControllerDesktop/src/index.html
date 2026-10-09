@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ControllerDesktop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ─── Sidebar Navigation ─────────────────────────────── -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">🎮</span>
+        <span class="logo-text">ControllerDesktop</span>
+      </div>
+      <div class="version" id="app-version">v1.0.0</div>
+    </div>
+
+    <ul class="nav-list">
+      <li class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">📊</span>
+        <span class="nav-label">Dashboard</span>
+      </li>
+      <li class="nav-item" data-page="mappings">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Mappings</span>
+      </li>
+      <li class="nav-item" data-page="keyboard">
+        <span class="nav-icon">⌨️</span>
+        <span class="nav-label">Tastatur</span>
+      </li>
+      <li class="nav-item" data-page="profiles">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Profile</span>
+      </li>
+      <li class="nav-item" data-page="settings">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Einstellungen</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="controller-status" id="controller-status">
+        <span class="status-dot" id="status-dot"></span>
+        <span class="status-text" id="status-text">Kein Controller</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── Main Content ───────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <section class="page active" id="page-dashboard">
+      <header class="page-header">
+        <h1>Dashboard</h1>
+        <p class="page-subtitle">Controller-Status und Schnellzugriff</p>
+      </header>
+
+      <div class="dashboard-grid">
+        <!-- Controller Card -->
+        <div class="card controller-card">
+          <div class="card-header">
+            <h2>Controller</h2>
+            <span class="badge" id="controller-badge">Nicht verbunden</span>
+          </div>
+          <div class="card-body">
+            <div class="controller-visual" id="controller-visual">
+              <div class="controller-body">
+                <div class="dpad">
+                  <div class="dpad-btn dpad-up" data-btn="12">▲</div>
+                  <div class="dpad-btn dpad-left" data-btn="14">◄</div>
+                  <div class="dpad-center"></div>
+                  <div class="dpad-btn dpad-right" data-btn="15">►</div>
+                  <div class="dpad-btn dpad-down" data-btn="13">▼</div>
+                </div>
+                <div class="controller-middle">
+                  <div class="small-btn" data-btn="8">SELECT</div>
+                  <div class="small-btn" data-btn="9">START</div>
+                </div>
+                <div class="face-buttons">
+                  <div class="face-btn btn-y" data-btn="3">Y</div>
+                  <div class="face-btn btn-x" data-btn="2">X</div>
+                  <div class="face-btn btn-b" data-btn="1">B</div>
+                  <div class="face-btn btn-a" data-btn="0">A</div>
+                </div>
+                <div class="shoulder-row">
+                  <div class="shoulder-btn" data-btn="4">LB</div>
+                  <div class="shoulder-btn" data-btn="6">LT</div>
+                  <div class="shoulder-btn" data-btn="7">RT</div>
+                  <div class="shoulder-btn" data-btn="5">RB</div>
+                </div>
+                <div class="sticks-row">
+                  <div class="stick" id="stick-left">
+                    <div class="stick-base"></div>
+                    <div class="stick-nub"></div>
+                  </div>
+                  <div class="stick" id="stick-right">
+                    <div class="stick-base"></div>
+                    <div class="stick-nub"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="controller-info" id="controller-info">
+              <p>Verbinde einen Controller um zu beginnen</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Schnellaktionen</h2>
+          </div>
+          <div class="card-body">
+            <div class="quick-actions">
+              <button class="quick-btn" data-action="toggle-app">
+                <span class="qa-icon">🔄</span>
+                <span class="qa-label">App an/aus</span>
+              </button>
+              <button class="quick-btn" data-action="minimize">
+                <span class="qa-icon">📦</span>
+                <span class="qa-label">Minimieren</span>
+              </button>
+              <button class="quick-btn" data-action="screenshot">
+                <span class="qa-icon">📸</span>
+                <span class="qa-label">Screenshot</span>
+              </button>
+              <button class="quick-btn" data-action="volume-up">
+                <span class="qa-icon">🔊</span>
+                <span class="qa-label">Lauter</span>
+              </button>
+              <button class="quick-btn" data-action="volume-down">
+                <span class="qa-icon">🔉</span>
+                <span class="qa-label">Leiser</span>
+              </button>
+              <button class="quick-btn" data-action="mute">
+                <span class="qa-icon">🔇</span>
+                <span class="qa-label">Stumm</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Mapping -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Aktives Mapping</h2>
+          </div>
+          <div class="card-body">
+            <div class="active-mapping" id="active-mapping">
+              <p>Kein Mapping aktiv</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Letzte Aktionen</h2>
+          </div>
+          <div class="card-body">
+            <div class="activity-log" id="activity-log">
+              <p class="empty-state">Keine Aktivität</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ MAPPINGS ═══ -->
+    <section class="page" id="page-mappings">
+      <header class="page-header">
+        <h1>Mappings</h1>
+        <p class="page-subtitle">Controller-Tasten Aktionen zuweisen</p>
+      </header>
+
+      <div class="mappings-layout">
+        <!-- Mapping List -->
+        <div class="card mappings-list-card">
+          <div class="card-header">
+            <h2>Mappings</h2>
+            <button class="btn btn-primary btn-sm" id="btn-add-mapping">+ Neu</button>
+          </div>
+          <div class="card-body">
+            <div class="mappings-list" id="mappings-list">
+              <!-- Dynamisch gefüllt -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Mapping Editor -->
+        <div class="card mapping-editor-card">
+          <div class="card-header">
+            <h2>Mapping Editor</h2>
+            <div class="editor-actions">
+              <button class="btn btn-secondary btn-sm" id="btn-duplicate-mapping">Duplizieren</button>
+              <button class="btn btn-danger btn-sm" id="btn-delete-mapping">Löschen</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="mapping-editor" id="mapping-editor">
+              <div class="form-group">
+                <label for="mapping-name">Name</label>
+                <input type="text" id="mapping-name" placeholder="Mapping Name..." class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="mapping-trigger">Trigger (Taste/Button)</label>
+                <select id="mapping-trigger" class="form-select">
+                  <option value="">Trigger wählen...</option>
+                  <optgroup label="Face Buttons">
+                    <option value="0">A / Cross</option>
+                    <option value="1">B / Circle</option>
+                    <option value="2">X / Square</option>
+                    <option value="3">Y / Triangle</option>
+                  </optgroup>
+                  <optgroup label="Shoulder">
+                    <option value="4">LB / L1</option>
+                    <option value="5">RB / R1</option>
+                    <option value="6">LT / L2</option>
+                    <option value="7">RT / R2</option>
+                  </optgroup>
+                  <optgroup label="D-Pad">
+                    <option value="12">D-Pad Up</option>
+                    <option value="13">D-Pad Down</option>
+                    <option value="14">D-Pad Left</option>
+                    <option value="15">D-Pad Right</option>
+                  </optgroup>
+                  <optgroup label="Center">
+                    <option value="8">Select / Back</option>
+                    <option value="9">Start / Options</option>
+                    <option value="10">L3 (Linker Stick)</option>
+                    <option value="11">R3 (Rechter Stick)</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="mapping-action-type">Aktionstyp</label>
+                <select id="mapping-action-type" class="form-select">
+                  <option value="key">Taste drücken</option>
+                  <option value="mouse">Mausaktion</option>
+                  <option value="scroll">Scrollen</option>
+                  <option value="macro">Makro</option>
+                  <option value="app">App-Befehl</option>
+                </select>
+              </div>
+              <div class="form-group" id="action-key-group">
+                <label for="mapping-key">Taste</label>
+                <input type="text" id="mapping-key" placeholder="z.B. A, F5, SPACE..." class="form-input">
+              </div>
+              <div class="form-group" id="action-modifiers-group">
+                <label>Modifier</label>
+                <div class="checkbox-group">
+                  <label class="checkbox-label"><input type="checkbox" id="mod-ctrl"> Strg</label>
+                  <label class="checkbox-label"><input type="checkbox" id="mod-alt"> Alt</label>
+                  <label class="checkbox-label"><input type="checkbox" id="mod-shift"> Umschalt</label>
+                  <label class="checkbox-label"><input type="checkbox" id="mod-meta"> Meta/Win</label>
+                </div>
+              </div>
+              <div class="form-group" id="action-mouse-group" style="display:none;">
+                <label for="mapping-mouse-action">Mausaktion</label>
+                <select id="mapping-mouse-action" class="form-select">
+                  <option value="click">Klick</option>
+                  <option value="doubleclick">Doppelklick</option>
+                  <option value="rightclick">Rechtsklick</option>
+                </select>
+              </div>
+              <div class="form-group" id="action-scroll-group" style="display:none;">
+                <label for="mapping-scroll-direction">Richtung</label>
+                <select id="mapping-scroll-direction" class="form-select">
+                  <option value="up">Hoch</option>
+                  <option value="down">Runter</option>
+                </select>
+              </div>
+              <div class="form-group" id="action-app-group" style="display:none;">
+                <label for="mapping-app-command">App-Befehl</label>
+                <select id="mapping-app-command" class="form-select">
+                  <option value="minimize">Minimieren</option>
+                  <option value="toggle">An/Aus</option>
+                  <option value="close">Schließen</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="mapping-cooldown">Cooldown (ms)</label>
+                <input type="number" id="mapping-cooldown" value="200" min="0" max="5000" class="form-input">
+              </div>
+              <div class="form-actions">
+                <button class="btn btn-primary" id="btn-save-mapping">Speichern</button>
+                <button class="btn btn-secondary" id="btn-cancel-mapping">Abbrechen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ TASTATUR ═══ -->
+    <section class="page" id="page-keyboard">
+      <header class="page-header">
+        <h1>Bildschirmtastatur</h1>
+        <p class="page-subtitle">Vollständige Tastatur mit Controller-Steuerung</p>
+      </header>
+
+      <div class="keyboard-layout">
+        <div class="card">
+          <div class="card-header">
+            <h2>Tastatur</h2>
+            <div class="keyboard-controls">
+              <button class="btn btn-secondary btn-sm" id="btn-keyboard-clear">Leeren</button>
+              <button class="btn btn-secondary btn-sm" id="btn-keyboard-close">Schließen</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="screen-keyboard" id="screen-keyboard">
+              <!-- Dynamisch generiert -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ PROFILE ═══ -->
+    <section class="page" id="page-profiles">
+      <header class="page-header">
+        <h1>Profile</h1>
+        <p class="page-subtitle">Controller-Profile verwalten</p>
+      </header>
+
+      <div class="profiles-layout">
+        <div class="card">
+          <div class="card-header">
+            <h2>Profile</h2>
+            <button class="btn btn-primary btn-sm" id="btn-add-profile">+ Neu</button>
+          </div>
+          <div class="card-body">
+            <div class="profiles-list" id="profiles-list">
+              <!-- Dynamisch gefüllt -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ EINSTELLUNGEN ═══ -->
+    <section class="page" id="page-settings">
+      <header class="page-header">
+        <h1>Einstellungen</h1>
+        <p class="page-subtitle">ControllerDesktop anpassen</p>
+      </header>
+
+      <div class="settings-layout">
+        <div class="card">
+          <div class="card-header">
+            <h2>Allgemein</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" id="setting-start-minimized">
+                <span class="toggle-slider"></span>
+                <span>Minimiert starten</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" id="setting-autostart">
+                <span class="toggle-slider"></span>
+                <span>Autostart mit Windows</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label for="setting-theme">Theme</label>
+              <select id="setting-theme" class="form-select">
+                <option value="dark">Dunkel</option>
+                <option value="light">Hell</option>
+                <option value="system">System</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Controller</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="setting-deadzone">Deadzone</label>
+              <input type="range" id="setting-deadzone" min="0" max="0.5" step="0.01" value="0.15" class="form-range">
+              <span class="range-value" id="deadzone-value">0.15</span>
+            </div>
+            <div class="form-group">
+              <label for="setting-sensitivity">Maus-Sensitivität</label>
+              <input type="range" id="setting-sensitivity" min="0.1" max="3" step="0.1" value="1.0" class="form-range">
+              <span class="range-value" id="sensitivity-value">1.0</span>
+            </div>
+            <div class="form-group">
+              <label for="setting-scrollspeed">Scroll-Geschwindigkeit</label>
+              <input type="range" id="setting-scrollspeed" min="0.1" max="3" step="0.1" value="1.0" class="form-range">
+              <span class="range-value" id="scrollspeed-value">1.0</span>
+            </div>
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" id="setting-rumble" checked>
+                <span class="toggle-slider"></span>
+                <span>Rumble/Vibration</span>
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="toggle-label">
+                <input type="checkbox" id="setting-swapsticks">
+                <span class="toggle-slider"></span>
+                <span>Sticks tauschen</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Erweitert</h2>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <button class="btn btn-secondary" id="btn-export-config">Config exportieren</button>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-secondary" id="btn-import-config">Config importieren</button>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-danger" id="btn-reset-config">Zurücksetzen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Toast Notifications ─────────────────────────────── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ─── Modal ──────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h3 id="modal-title">Titel</h3>
+        <button class="modal-close" id="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Dynamisch -->
+      </div>
+      <div class="modal-footer" id="modal-footer">
+        <!-- Dynamisch -->
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
