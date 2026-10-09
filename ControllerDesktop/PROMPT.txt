@@ -1,0 +1,194 @@
+ERSTELLE MIR EINE LIGHTWEIGHT DESKTOP-APP ("Controller Desktop Remote"),
+mit der man seinen PC vollständig über einen Gamecontroller steuern kann.
+
+═══════════════════════════════════════════════════
+1. KERNANFORDERUNG – "Plug & Play, NULL Dependencies"
+═══════════════════════════════════════════════════
+[GEÄNDERT] DER EINZIGE LIEFERUMFANG IST DIE FERTIGE, DOWNLOAD- &
+AUSFÜHRBARE ANWENDUNG. Ziel-Mechanik:
+
+  Download → Doppelklick → App läuft. PUNKT.
+
+  - Genau EINE einzige Datei (z. B. "ControllerDesktopRemote.exe",
+    ".app", AppImage). Kein Installer, kein Setup-Wizard, keine
+    "Bitte installiere zuerst X"-Meldung.
+  - ALLES eingebettet/bundled:
+      ✓ Alle Laufzeitumgebungen (kein .NET-Runtime-, kein Python-,
+        kein Java-, kein VC++-Redist-Download)
+      ✓ Alle Bibliotheken als DLLs/Static-Linking
+      ✓ Alle Ressourcen, Icons, Sounds, Default-Profile
+      ✓ Kein externes MVC-, kein Package-Manager-Laufzeit-Bedarf
+  - KEINE Treiberinstallation nötig – nur die Standard-OS-Stacks
+    nutzen (Windows XInput/DirectInput, Bluetooth-Klassik).
+  - Keine Admin-Rechte für den Normalbetrieb (nur für OS-Aktionen wie
+    Herunterfahren, wo das OS es ohnehin verlangt → siehe §4).
+  - Kein Internet-/Account-/Cloud-Zwang. App funktioniert 100 % offline
+    aus der Portabilité heraus.
+  - Optional & unsichtbar: Autostart per Settings-Toggle (registriert
+    sich selbst, kein zweites Tool nötig).
+  - Hot-Plug: Ein-/Ausklemmen des Controllers wird live erkannt.
+  - Es GIBT keinen zweiten Schritt – der User soll nach dem Download
+    nie wieder eine Konsole, einen Installer oder eine Runtime-Page sehen.
+
+═══════════════════════════════════════════════════
+2. FUNKTIONSUMFANG – Desktop-Steuerung per Controller
+═══════════════════════════════════════════════════
+a) Maus-Emulation
+   - Linker Stick = Mauszeiger (einstellbare Geschwindigkeit,
+     Beschleunigung/Dezeleration, Anti-Drift/Deadzone).
+   - Rechter Stick optional als zweiter Cursor oder Scroll-Navigation.
+   - Buttons für: Linksklick, Rechtsklick, Doppelklick, Drag & Drop
+     (Halten-Taste), Mittelklick.
+   - Rad-Scroll per D-Pad, Trigger oder Stick-Banking.
+
+b) Tastatur-Emulation
+   - Systemweite Tastatureingaben für Shortcuts (Strg+C/V/X/Z, Alt+Tab,
+     Win, Esc, Enter, Pfeiltasten, F-Keys etc.).
+   - Funktioniert auch in nicht-fokussierten Apps.
+
+c) Vollständige OS-Kontrolle OHNE physisches Keyboard/Mouse
+   - Bildschirmtastatur öffnen/schließen (OS-integriert).
+   - Lautstärke hoch/runter/stumm, Bildschirm heller/dunkler.
+   - Mediensteuerung (Play, Pause, Next, Prev).
+   - Screenshot auslösen.
+   - App öffnen/schließen/minimieren/maximieren.
+   - Desktop-/App-Wechsel, Task-View.
+   - PC sperren, Neustart, Herunterfahren, Schlafmodus
+     (mit Bestätigung – siehe §4).
+   - Not-Aus / "Panic-Button": beendet den Controller-Zustand sofort
+     (global, auch wenn die App versteckt ist).
+
+d) Controller-orientierte Navigation
+   - Radiales Menü (Quadranten-Menü) für schnelle Zugriffe.
+   - Modus-System: Mausmodus ↔ Medienmodus ↔ OS-Modus,
+     Umschaltung per Modifier-Button.
+   - Kleines, optional deaktivierbares On-Screen-Overlay, das aktuellen
+     Modus + aktive Belegung anzeigt.
+
+═══════════════════════════════════════════════════
+3. CUSTOM MAPPINGS – höchst anpassbar
+═══════════════════════════════════════════════════
+- Mapping-Editor mit Drag & Drop: Eingabe (Button/Axis/Hat) ↔ Aktion.
+- Jede Taste/Axis einzeln konfigurierbar inkl.:
+  • Doppelbelegung, Long-Press, Turbo/Wiederholrate
+  • Achsen-Invertierung, Deadzone pro Achse, Sensitivitätskurve
+    (linear / exponential / Custom-Slider)
+  • Modifier-Kombinationen (z. B. "RB halten" als Layer-Taste)
+- Profile:
+  • Mehrere Profiles (z. B. "Arbeiten", "Medien", "Browser",
+    "Präsentation").
+  • Automatischer Profilwechsel per Fenster-/App-Matching-Regeln.
+  • Import/Export als JSON (zum Teilen).
+- Factory-Reset, Konflikt-Erkennung bei Doppelbelegung.
+
+═══════════════════════════════════════════════════
+4. SETTINGS & SICHERHEIT – KOMPLETT LOKAL
+═══════════════════════════════════════════════════
+[NEU] SICHERHEITSHARTEN VORRANG – 100 % LOKAL:
+  - KEINE Telemetrie, KEIN Analytics, KEIN Crash-Upload,
+    KEIN Update-Ping, KEINE Cloud, KEIN Konto/Login.
+  - Kein einziger eingehender oder ausgehender Netzwerk-Call.
+    (Im Code nachweisbar: kein Socket/HTTP-Client except loopback.)
+  - Alle Daten (Settings, Profile, Logs) liegen lokal in einem
+    transparenten, user-lesbaren Format (JSON/SQLite) im
+    App-Data-Ordner – kein verstecktes, kein verschlüsseltes Cloud-Sync.
+  - Netzwerk-Verhalten dokumentieren: "Die App benötigt keine
+    Netzwerkfreigabe; Firewall-Hinweis im README ist überflüssig."
+  - Rechte-Modell minimal: Normalbetrieb ohne Admin. Privilegierte
+    OS-Aktionen (Runterfahren/Neustart) nur mit expliziter, einmaliger
+    Nutzer-Bestätigung im UI – niemals stillschweigend.
+  - Passwortfeld-Schutz: Eingaben pausieren automatisch, wenn ein
+    Admin-/Passwort-Feld den Fokus hat (Keylogger-Vermeidung).
+  - Panic-Hotkey + Panic-Controller-Combo (global abhörbar, auch im
+    Tray-Versteck).
+
+Allgemeine Settings:
+  - Autostart (Toggle), Minimieren zu Tray, Tray-Sichtbarkeit.
+  - App per Controller ON/OFF (z. B. Chevron-Combo halten).
+  - Sprache: Deutsch / Englisch (i18n-fähig).
+  - Theme: Hell / Dunkel / System (+ Akzentfarbe).
+
+Controller-Settings:
+  - Erkannte Geräte, Verbindungsstatus, Battery-Level (falls verfügbar),
+    Rumble-/Testfunktion, Bluetooth-Pairing-Hinweis.
+
+Eingabe-Settings:
+  - Polling-Rate, globale Hotkeys, Fokus-Schutz.
+
+═══════════════════════════════════════════════════
+5. UI/UX – "Clean UI"
+═══════════════════════════════════════════════════
+- Moderne, ruhige Oberfläche: Karten-Layout, großzügige Abstände,
+  klare Typografie, Subtle-Schatten, abgerundete Ecken.
+- Sidebar: Übersicht · Controller · Mapping · Profile · Settings · Hilfe.
+- Übersichts-Dashboard:
+  • Live-Controller-Grafik mit hervorgehobenen aktuell gedrückten Buttons.
+  • Status (verbunden/getrennt), aktives Profil, aktiver Modus,
+    [NEU] sichtbarer Hinweis "Läuft komplett lokal – keine Verbindung".
+- Mapping-Editor visuell: Controller-Diagramm als Drop-Target
+  (kein reines Tabellen-Dropdown).
+- Onboarding-Wizard beim Start: Controller verbinden → Standardprofil
+  wählen → Testmodus.
+- [NEU] App NUR per Controller komplett bedienbar:
+  Eigener UI-Navigation-Modus (Cursor + Click + Back) für die eigene
+  App-Oberfläche – denn genau das ist der Use-Case "ohne Keyboard".
+- Tooltips & Erklärtexte, Tastatur-Navigation, skalierbare Schriften.
+
+═══════════════════════════════════════════════════
+6. ARCHITEKTUR & TECHNIK – abhängig von den Anforderungen
+═══════════════════════════════════════════════════
+[GEÄNDERT] Kein vorgegebener Stack. Du (die KI) entscheidest die
+Architektur AUS den Anforderungen ab – begründe die Wahl in einem
+kurzen Konzept anhand dieser Constraints:
+
+  Harte Constraints (bestimmen den Stack):
+  C1  Single-File- oder Single-Bundle-Auslieferung OHNE Runtime-Dependency
+  C2  Niedriger RAM-Footprint (< 100 MB Leerlauf) & Start < 2 s
+  C3  Systemweite globale Input-Injektion (Maus + Tastatur, Ebenen-Übergreifend)
+  C4  Gamecontroller-Input (XInput + DInput + HID, Hot-Plug)
+  C5  Moderne, saubere UI (Charts/Diagramm/Drag&Drop-fähig)
+  C6  Quellplattform Windows 10/11 (Priorität); macOS/Linux optional
+
+  Kandidaten-Slots zur Bewertung (nicht vorgegeben!):
+  - Rust (gilrs/SDL2 + enigo/rdev + egui/iced)
+  - Tauri (Rust-Backend + Web-UI, kleine Binary)
+  - Go (Fyne / cwgoes-backends)
+  - .NET NativeAOT (falls Single-File + AOT das Härtekriterium erfüllt)
+  - C++/Win32 + DirectInput (kleinster Footprint, mehr Aufwand)
+
+  Liefere im ersten Schritt:
+  1. Stack-Entscheidung mit 3–5 Sätzen Begründung gegen C1–C6.
+  2. Architektur-Skizze als Ordner-/Modulstruktur, z. B.:
+       /core        Input-Engine (Polling, Events, Mapping-Parser)
+       /mapping     Profile, Parser, Konflikt-Check
+       /platform    OS-Injection, Autostart, Bildschirmtastatur
+       /ui          Views, Dashboard, Mapping-Editor
+       /settings    Persistenz (JSON/SQLite, rein lokal)
+  3. Dann Schritt für Schritt implementieren.
+
+  Code sauber, kommentiert, wartbar. Keine versteckten Abhängigkeiten
+  zur Laufzeit – bei jedem Build prüfen, dass die resultierende Binary
+  ohne nachinstallierbare Komponenten startet.
+
+═══════════════════════════════════════════════════
+7. LIEFERUMFANG  [GEÄNDERT]
+═══════════════════════════════════════════════════
+PRIMÄR & EINZIG VERBINDLICH:
+  → Die fertige, ausführbare Anwendung als EINE einzelne Datei,
+    die man herunterladen, doppelklick-öffnen und benutzen kann.
+    Keine Dependencies, keine Installation, kein Setup.
+
+BEIGEFÜGT (falls technisch sinnvoll, aber NICHT Teil des User-Flows):
+  - Optionaler, minimalistischer README-Absatz NUR fürs Troubleshooting
+    (z. B. Windows-SmartScreen-Hinweis beim ersten Start erklären).
+  - Build-/Release-Anleitung für dich als Entwickler
+    (ein Kommando, das die Single-File-Artefakte erzeugt).
+
+ALLES ANDERE (Installer, Paket-Manager, Runtime-Downloads, Account,
+Cloud) IST AUSDRÜCKLICH NICHT GEFORDERT UND NICHT ZU LIEFERN.
+
+STARTE mit dem Architektur-Konzept (Stack-Wahl gegen C1–C6 + Modul-
+struktur), FRAGE nach bei offenen Punkten, dann implementiere
+Schritt für Schritt: lauffähige Grundapp → Controller-Erkennung →
+Maus-/Tastatur-Emulation → Settings & Sicherheit (lokal) →
+Mapping-Editor → UI-Feinschliff → Single-File-Build.
