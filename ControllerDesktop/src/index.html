@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" data-theme="light">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,7 @@
         </div>
       </div>
 
-      <nav class="nav" aria-label="Hauptnavigation">
+      <nav class="nav" aria-label="Hauptnavigation" data-i18n-aria-label="nav.label">
         <button type="button" class="nav-item active" data-page="dashboard" aria-current="page">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/>
@@ -29,7 +29,7 @@
             <rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/>
             <rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>
           </svg>
-          <span>Übersicht</span>
+          <span data-i18n="nav.dashboard">Übersicht</span>
         </button>
         <button type="button" class="nav-item" data-page="mappings">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -38,37 +38,37 @@
             <circle cx="15" cy="12" r="2"/>
             <circle cx="7" cy="17" r="2"/>
           </svg>
-          <span>Mappings</span>
+          <span data-i18n="nav.mappings">Mappings</span>
         </button>
         <button type="button" class="nav-item" data-page="keyboard">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <rect x="2.5" y="6" width="19" height="12" rx="2.5"/>
             <path d="M6 10h.5M9.5 10h.5M13 10h.5M16.5 10h.5M7 14h10"/>
           </svg>
-          <span>Tastatur</span>
+          <span data-i18n="nav.keyboard">Tastatur</span>
         </button>
         <button type="button" class="nav-item" data-page="profiles">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3.5l8.5 4.75L12 13 3.5 8.25 12 3.5z"/>
             <path d="M3.5 13L12 17.75 20.5 13"/>
           </svg>
-          <span>Profile</span>
+          <span data-i18n="nav.profiles">Profile</span>
         </button>
         <button type="button" class="nav-item" data-page="settings">
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M10.3 3.6a1.3 1.3 0 0 1 3.4 0l.3 1.4a7 7 0 0 1 1.7 1l1.3-.6a1.3 1.3 0 0 1 1.7 1.7l-.6 1.3a7 7 0 0 1 1 1.7l1.4.3a1.3 1.3 0 0 1 0 3.4l-1.4.3a7 7 0 0 1-1 1.7l.6 1.3a1.3 1.3 0 0 1-1.7 1.7l-1.3-.6a7 7 0 0 1-1.7 1l-.3 1.4a1.3 1.3 0 0 1-3.4 0l-.3-1.4a7 7 0 0 1-1.7-1l-1.3.6a1.3 1.3 0 0 1-1.7-1.7l.6-1.3a7 7 0 0 1-1-1.7l-1.4-.3a1.3 1.3 0 0 1 0-3.4l1.4-.3a7 7 0 0 1 1-1.7l-.6-1.3a1.3 1.3 0 0 1 1.7-1.7l1.3.6a7 7 0 0 1 1.7-1z"/>
             <circle cx="12" cy="12" r="2.8"/>
           </svg>
-          <span>Einstellungen</span>
+          <span data-i18n="nav.settings">Einstellungen</span>
         </button>
       </nav>
 
       <div class="sidebar-foot">
         <div class="link-state" id="controller-status">
           <span class="status-dot" id="status-dot"></span>
-          <span class="status-text" id="status-text">Kein Controller</span>
+          <span class="status-text" id="status-text" data-i18n="status.noController">Kein Controller</span>
         </div>
-        <p class="local-note">Läuft lokal · keine Netzwerkverbindung</p>
+        <p class="local-note" data-i18n="app.localNote">Läuft lokal · keine Netzwerkverbindung</p>
       </div>
     </aside>
 
@@ -79,8 +79,8 @@
       <section class="page active" id="page-dashboard">
         <header class="page-head">
           <div>
-            <h1>Übersicht</h1>
-            <p class="page-sub">Controller prüfen, Profil wechseln, letzte Eingaben sehen.</p>
+            <h1 data-i18n="dashboard.title">Übersicht</h1>
+            <p class="page-sub" data-i18n="dashboard.subtitle">Controller prüfen, Profil wechseln, letzte Eingaben sehen.</p>
           </div>
           <span class="chip" id="profile-chip">Profil: Standard</span>
         </header>
@@ -90,51 +90,51 @@
 
             <section class="panel status-panel">
               <div class="panel-head">
-                <h2>Verbindung</h2>
+                <h2 data-i18n="dashboard.connection">Verbindung</h2>
               </div>
               <div class="panel-body">
                 <p class="state-line">
                   <span class="badge" id="controller-badge">Nicht verbunden</span>
                 </p>
-                <p class="device-name" id="controller-info">Verbinde einen Controller, um zu beginnen.</p>
+                <p class="device-name" id="controller-info" data-i18n="dashboard.infoDisconnected">Verbinde einen Controller, um zu beginnen.</p>
                 <dl class="facts">
-                  <div><dt>Profil</dt><dd id="fact-profile">Standard</dd></div>
-                  <div><dt>Mappings</dt><dd id="fact-mappings">0</dd></div>
-                  <div><dt>Eingabe</dt><dd id="fact-last-input">–</dd></div>
+                  <div><dt data-i18n="dashboard.factProfile">Profil</dt><dd id="fact-profile">Standard</dd></div>
+                  <div><dt data-i18n="dashboard.factMappings">Mappings</dt><dd id="fact-mappings">0</dd></div>
+                  <div><dt data-i18n="dashboard.factInput">Eingabe</dt><dd id="fact-last-input">–</dd></div>
                 </dl>
               </div>
             </section>
 
             <section class="panel">
               <div class="panel-head">
-                <h2>Schnellaktionen</h2>
-                <span class="panel-note">senden direkt</span>
+                <h2 data-i18n="dashboard.quick">Schnellaktionen</h2>
+                <span class="panel-note" data-i18n="dashboard.quickNote">senden direkt</span>
               </div>
               <div class="panel-body panel-body--flush">
                 <div class="quick-grid">
                   <button type="button" class="quick-btn" data-action="toggle-app">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9"/><path d="M6.3 6.3a8 8 0 1 0 11.4 0"/></svg>
-                    <span>App an/aus</span>
+                    <span data-i18n="dashboard.quickToggle">App an/aus</span>
                   </button>
                   <button type="button" class="quick-btn" data-action="minimize">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="M8 14.5h8"/></svg>
-                    <span>Minimieren</span>
+                    <span data-i18n="dashboard.quickMinimize">Minimieren</span>
                   </button>
                   <button type="button" class="quick-btn" data-action="screenshot">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 8.5h3l1.5-2.5h8L17.5 8.5h3v11h-17z"/><circle cx="12" cy="13.5" r="3.5"/></svg>
-                    <span>Screenshot</span>
+                    <span data-i18n="dashboard.quickScreenshot">Screenshot</span>
                   </button>
                   <button type="button" class="quick-btn" data-action="volume-up">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6.5 9H3.5v6h3L11 19z"/><path d="M15 9.5a4 4 0 0 1 0 5M17.5 7a7.5 7.5 0 0 1 0 10"/></svg>
-                    <span>Lauter</span>
+                    <span data-i18n="dashboard.quickVolumeUp">Lauter</span>
                   </button>
                   <button type="button" class="quick-btn" data-action="volume-down">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6.5 9H3.5v6h3L11 19z"/><path d="M15 9.5a4 4 0 0 1 0 5"/></svg>
-                    <span>Leiser</span>
+                    <span data-i18n="dashboard.quickVolumeDown">Leiser</span>
                   </button>
                   <button type="button" class="quick-btn" data-action="mute">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5L6.5 9H3.5v6h3L11 19z"/><path d="M15.5 9.5l5 5M20.5 9.5l-5 5"/></svg>
-                    <span>Stumm</span>
+                    <span data-i18n="dashboard.quickMute">Stumm</span>
                   </button>
                 </div>
               </div>
@@ -142,12 +142,12 @@
 
             <section class="panel">
               <div class="panel-head">
-                <h2>Verlauf</h2>
-                <span class="panel-note">diese Sitzung</span>
+                <h2 data-i18n="dashboard.activity">Verlauf</h2>
+                <span class="panel-note" data-i18n="dashboard.activityNote">diese Sitzung</span>
               </div>
               <div class="panel-body panel-body--flush">
                 <div class="activity-log" id="activity-log">
-                  <p class="empty-state">Noch keine Eingaben.</p>
+                  <p class="empty-state" data-i18n="dashboard.activityEmpty">Noch keine Eingaben.</p>
                 </div>
               </div>
             </section>
@@ -157,12 +157,12 @@
 
             <section class="panel pad-panel">
               <div class="panel-head">
-                <h2>Live-Eingabe</h2>
+                <h2 data-i18n="dashboard.live">Live-Eingabe</h2>
                 <span class="panel-note" id="pad-device">Kein Gerät</span>
               </div>
               <div class="panel-body">
                 <div class="controller-visual" id="controller-visual">
-                  <svg viewBox="0 20 660 360" class="pad" role="img" aria-label="Controller mit Live-Anzeige gedrückter Tasten">
+                  <svg viewBox="0 20 660 360" class="pad" role="img" aria-label="Controller mit Live-Anzeige gedrückter Tasten" data-i18n-aria-label="dashboard.padAria">
                     <defs>
                       <linearGradient id="padShade" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0" class="pad-shade-top"/>
@@ -242,18 +242,18 @@
                     </g>
                   </svg>
                 </div>
-                <p class="pad-hint">Linker Stick bewegt den Zeiger, rechter Stick scrollt. LB/RB/LT/RT und die Face-Buttons lösen Mappings aus.</p>
+                <p class="pad-hint" data-i18n="dashboard.padHint">Linker Stick bewegt den Zeiger, rechter Stick scrollt. LB/RB/LT/RT und die Face-Buttons lösen Mappings aus.</p>
               </div>
             </section>
 
             <section class="panel">
               <div class="panel-head">
-                <h2>Aktives Profil</h2>
+                <h2 data-i18n="dashboard.activeProfile">Aktives Profil</h2>
                 <span class="panel-note" id="mapping-count">0 Mappings</span>
               </div>
               <div class="panel-body panel-body--flush">
                 <div class="active-mapping" id="active-mapping">
-                  <p class="empty-state">Noch keine Mappings.</p>
+                  <p class="empty-state" data-i18n="dashboard.noMappings">Noch keine Mappings.</p>
                 </div>
               </div>
             </section>
@@ -265,8 +265,8 @@
       <section class="page" id="page-mappings">
         <header class="page-head">
           <div>
-            <h1>Mappings</h1>
-            <p class="page-sub">Controller-Eingaben Aktionen zuweisen.</p>
+            <h1 data-i18n="mappings.title">Mappings</h1>
+            <p class="page-sub" data-i18n="mappings.subtitle">Controller-Eingaben Aktionen zuweisen.</p>
           </div>
           <span class="chip" id="mappings-profile">Profil: Standard</span>
         </header>
@@ -274,8 +274,8 @@
         <div class="split">
           <section class="panel">
             <div class="panel-head">
-              <h2>Einträge</h2>
-              <button type="button" class="btn btn-primary btn-sm" id="btn-add-mapping">Neu</button>
+              <h2 data-i18n="mappings.entries">Einträge</h2>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-add-mapping" data-i18n="mappings.new">Neu</button>
             </div>
             <div class="panel-body panel-body--flush">
               <div class="mappings-list" id="mappings-list"></div>
@@ -284,58 +284,58 @@
 
           <section class="panel">
             <div class="panel-head">
-              <h2>Mapping bearbeiten</h2>
+              <h2 data-i18n="mappings.edit">Mapping bearbeiten</h2>
               <div class="head-actions">
-                <button type="button" class="btn btn-quiet btn-sm" id="btn-duplicate-mapping">Duplizieren</button>
-                <button type="button" class="btn btn-quiet btn-sm btn-quiet--danger" id="btn-delete-mapping">Löschen</button>
+                <button type="button" class="btn btn-quiet btn-sm" id="btn-duplicate-mapping" data-i18n="mappings.duplicate">Duplizieren</button>
+                <button type="button" class="btn btn-quiet btn-sm btn-quiet--danger" id="btn-delete-mapping" data-i18n="mappings.delete">Löschen</button>
               </div>
             </div>
             <div class="panel-body">
               <div class="mapping-editor" id="mapping-editor">
                 <div class="field-grid">
                   <div class="field">
-                    <label for="mapping-name">Name</label>
-                    <input type="text" id="mapping-name" placeholder="z. B. Bestätigen" class="input">
+                    <label for="mapping-name" data-i18n="mappings.name">Name</label>
+                    <input type="text" id="mapping-name" placeholder="z. B. Bestätigen" data-i18n-placeholder="mappings.namePlaceholder" class="input">
                   </div>
                   <div class="field">
-                    <label for="mapping-trigger">Controller-Eingabe</label>
+                    <label for="mapping-trigger" data-i18n="mappings.trigger">Controller-Eingabe</label>
                     <select id="mapping-trigger" class="input">
-                      <option value="">Eingabe wählen …</option>
-                      <optgroup label="Face-Buttons">
+                      <option value="" data-i18n="mappings.triggerPlaceholder">Eingabe wählen …</option>
+                      <optgroup label="Face-Buttons" data-i18n-label="mappings.group.face">
                         <option value="button-0">A / Cross</option>
                         <option value="button-1">B / Circle</option>
                         <option value="button-2">X / Square</option>
                         <option value="button-3">Y / Triangle</option>
                       </optgroup>
-                      <optgroup label="Schultertasten">
+                      <optgroup label="Schultertasten" data-i18n-label="mappings.group.bumpers">
                         <option value="button-4">LB / L1</option>
                         <option value="button-5">RB / R1</option>
                         <option value="button-6">LT / L2</option>
                         <option value="button-7">RT / R2</option>
                       </optgroup>
-                      <optgroup label="D-Pad">
-                        <option value="button-12">D-Pad oben</option>
-                        <option value="button-13">D-Pad unten</option>
-                        <option value="button-14">D-Pad links</option>
-                        <option value="button-15">D-Pad rechts</option>
+                      <optgroup label="D-Pad" data-i18n-label="mappings.group.dpad">
+                        <option value="button-12" data-i18n="mappings.trigger.dpadUp">D-Pad oben</option>
+                        <option value="button-13" data-i18n="mappings.trigger.dpadDown">D-Pad unten</option>
+                        <option value="button-14" data-i18n="mappings.trigger.dpadLeft">D-Pad links</option>
+                        <option value="button-15" data-i18n="mappings.trigger.dpadRight">D-Pad rechts</option>
                       </optgroup>
-                      <optgroup label="Mitte">
+                      <optgroup label="Mitte" data-i18n-label="mappings.group.center">
                         <option value="button-8">Select / Back</option>
                         <option value="button-9">Start / Options</option>
-                        <option value="button-10">L3 (Stick-Klick links)</option>
-                        <option value="button-11">R3 (Stick-Klick rechts)</option>
+                        <option value="button-10" data-i18n="mappings.trigger.l3">L3 (Stick-Klick links)</option>
+                        <option value="button-11" data-i18n="mappings.trigger.r3">R3 (Stick-Klick rechts)</option>
                       </optgroup>
-                      <optgroup label="Linker Stick">
-                        <option value="axis-0-pos">nach rechts</option>
-                        <option value="axis-0-neg">nach links</option>
-                        <option value="axis-1-pos">nach unten</option>
-                        <option value="axis-1-neg">nach oben</option>
+                      <optgroup label="Linker Stick" data-i18n-label="mappings.group.leftStick">
+                        <option value="axis-0-pos" data-i18n="mappings.trigger.right">nach rechts</option>
+                        <option value="axis-0-neg" data-i18n="mappings.trigger.left">nach links</option>
+                        <option value="axis-1-pos" data-i18n="mappings.trigger.down">nach unten</option>
+                        <option value="axis-1-neg" data-i18n="mappings.trigger.up">nach oben</option>
                       </optgroup>
-                      <optgroup label="Rechter Stick">
-                        <option value="axis-2-pos">nach rechts</option>
-                        <option value="axis-2-neg">nach links</option>
-                        <option value="axis-3-pos">nach unten</option>
-                        <option value="axis-3-neg">nach oben</option>
+                      <optgroup label="Rechter Stick" data-i18n-label="mappings.group.rightStick">
+                        <option value="axis-2-pos" data-i18n="mappings.trigger.right">nach rechts</option>
+                        <option value="axis-2-neg" data-i18n="mappings.trigger.left">nach links</option>
+                        <option value="axis-3-pos" data-i18n="mappings.trigger.down">nach unten</option>
+                        <option value="axis-3-neg" data-i18n="mappings.trigger.up">nach oben</option>
                       </optgroup>
                     </select>
                   </div>
@@ -343,65 +343,65 @@
 
                 <div class="field-grid">
                   <div class="field">
-                    <label for="mapping-action-type">Aktion</label>
+                    <label for="mapping-action-type" data-i18n="mappings.action">Aktion</label>
                     <select id="mapping-action-type" class="input">
-                      <option value="key">Tastenkürzel senden</option>
-                      <option value="mouse">Mausklick</option>
-                      <option value="scroll">Scrollen</option>
-                      <option value="macro">Makro</option>
-                      <option value="app">App-Befehl</option>
+                      <option value="key" data-i18n="mappings.action.key">Tastenkürzel senden</option>
+                      <option value="mouse" data-i18n="mappings.action.mouse">Mausklick</option>
+                      <option value="scroll" data-i18n="mappings.action.scroll">Scrollen</option>
+                      <option value="macro" data-i18n="mappings.action.macro">Makro</option>
+                      <option value="app" data-i18n="mappings.action.app">App-Befehl</option>
                     </select>
                   </div>
                   <div class="field">
-                    <label for="mapping-cooldown">Cooldown in ms</label>
+                    <label for="mapping-cooldown" data-i18n="mappings.cooldown">Cooldown in ms</label>
                     <input type="number" id="mapping-cooldown" value="200" min="0" max="5000" class="input input--mono">
                   </div>
                 </div>
 
                 <div class="field" id="action-key-group">
-                  <label for="mapping-key">Taste</label>
-                  <input type="text" id="mapping-key" placeholder="z. B. A, F5, ENTER, LEFT" class="input input--mono">
+                  <label for="mapping-key" data-i18n="mappings.key">Taste</label>
+                  <input type="text" id="mapping-key" placeholder="z. B. A, F5, ENTER, LEFT" data-i18n-placeholder="mappings.keyPlaceholder" class="input input--mono">
                 </div>
 
                 <div class="field" id="action-modifiers-group">
-                  <label>Zusätzliche Tasten</label>
+                  <label data-i18n="mappings.modifiers">Zusätzliche Tasten</label>
                   <div class="checkbox-row">
-                    <label class="check"><input type="checkbox" id="mod-ctrl"><span>Strg</span></label>
-                    <label class="check"><input type="checkbox" id="mod-alt"><span>Alt</span></label>
-                    <label class="check"><input type="checkbox" id="mod-shift"><span>Umschalt</span></label>
-                    <label class="check"><input type="checkbox" id="mod-meta"><span>Windows</span></label>
+                    <label class="check"><input type="checkbox" id="mod-ctrl"><span data-i18n="mappings.modifier.ctrl">Strg</span></label>
+                    <label class="check"><input type="checkbox" id="mod-alt"><span data-i18n="mappings.modifier.alt">Alt</span></label>
+                    <label class="check"><input type="checkbox" id="mod-shift"><span data-i18n="mappings.modifier.shift">Umschalt</span></label>
+                    <label class="check"><input type="checkbox" id="mod-meta"><span data-i18n="mappings.modifier.meta">Windows</span></label>
                   </div>
                 </div>
 
                 <div class="field" id="action-mouse-group" hidden>
-                  <label for="mapping-mouse-action">Mausaktion</label>
+                  <label for="mapping-mouse-action" data-i18n="mappings.mouseAction">Mausaktion</label>
                   <select id="mapping-mouse-action" class="input">
-                    <option value="click">Linksklick</option>
-                    <option value="doubleclick">Doppelklick</option>
-                    <option value="rightclick">Rechtsklick</option>
+                    <option value="click" data-i18n="mappings.mouse.click">Linksklick</option>
+                    <option value="doubleclick" data-i18n="mappings.mouse.doubleclick">Doppelklick</option>
+                    <option value="rightclick" data-i18n="mappings.mouse.rightclick">Rechtsklick</option>
                   </select>
                 </div>
 
                 <div class="field" id="action-scroll-group" hidden>
-                  <label for="mapping-scroll-direction">Richtung</label>
+                  <label for="mapping-scroll-direction" data-i18n="mappings.direction">Richtung</label>
                   <select id="mapping-scroll-direction" class="input">
-                    <option value="up">Hoch</option>
-                    <option value="down">Runter</option>
+                    <option value="up" data-i18n="mappings.direction.up">Hoch</option>
+                    <option value="down" data-i18n="mappings.direction.down">Runter</option>
                   </select>
                 </div>
 
                 <div class="field" id="action-app-group" hidden>
-                  <label for="mapping-app-command">App-Befehl</label>
+                  <label for="mapping-app-command" data-i18n="mappings.appCommand">App-Befehl</label>
                   <select id="mapping-app-command" class="input">
-                    <option value="minimize">Minimieren</option>
-                    <option value="toggle">An/Aus</option>
-                    <option value="close">Schließen</option>
+                    <option value="minimize" data-i18n="mappings.app.minimize">Minimieren</option>
+                    <option value="toggle" data-i18n="mappings.app.toggle">An/Aus</option>
+                    <option value="close" data-i18n="mappings.app.close">Schließen</option>
                   </select>
                 </div>
 
                 <div class="editor-actions">
-                  <button type="button" class="btn btn-primary" id="btn-save-mapping">Speichern</button>
-                  <button type="button" class="btn btn-quiet" id="btn-cancel-mapping">Abbrechen</button>
+                  <button type="button" class="btn btn-primary" id="btn-save-mapping" data-i18n="mappings.save">Speichern</button>
+                  <button type="button" class="btn btn-quiet" id="btn-cancel-mapping" data-i18n="mappings.cancel">Abbrechen</button>
                 </div>
               </div>
             </div>
@@ -413,16 +413,16 @@
       <section class="page" id="page-keyboard">
         <header class="page-head">
           <div>
-            <h1>Tastatur</h1>
-            <p class="page-sub">Tasten an das aktive Fenster senden, ohne physische Tastatur.</p>
+            <h1 data-i18n="keyboard.title">Tastatur</h1>
+            <p class="page-sub" data-i18n="keyboard.subtitle">Tasten an das aktive Fenster senden, ohne physische Tastatur.</p>
           </div>
-          <button type="button" class="btn btn-quiet btn-sm" id="btn-keyboard-close">Zurück zur Übersicht</button>
+          <button type="button" class="btn btn-quiet btn-sm" id="btn-keyboard-close" data-i18n="keyboard.back">Zurück zur Übersicht</button>
         </header>
 
         <section class="panel">
           <div class="panel-head">
-            <h2>Bildschirmtastatur</h2>
-            <span class="panel-note">Klick sendet die Taste</span>
+            <h2 data-i18n="keyboard.pad">Bildschirmtastatur</h2>
+            <span class="panel-note" data-i18n="keyboard.note">Klick sendet die Taste</span>
           </div>
           <div class="panel-body">
             <div class="screen-keyboard" id="screen-keyboard"></div>
@@ -434,15 +434,15 @@
       <section class="page" id="page-profiles">
         <header class="page-head">
           <div>
-            <h1>Profile</h1>
-            <p class="page-sub">Mehrere Belegungen für Arbeit, Medien und Spiele.</p>
+            <h1 data-i18n="profiles.title">Profile</h1>
+            <p class="page-sub" data-i18n="profiles.subtitle">Mehrere Belegungen für Arbeit, Medien und Spiele.</p>
           </div>
-          <button type="button" class="btn btn-primary btn-sm" id="btn-add-profile">Neues Profil</button>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-add-profile" data-i18n="profiles.add">Neues Profil</button>
         </header>
 
         <section class="panel">
           <div class="panel-head">
-            <h2>Profile</h2>
+            <h2 data-i18n="profiles.heading">Profile</h2>
             <span class="panel-note" id="profiles-count">1 Profil</span>
           </div>
           <div class="panel-body panel-body--flush">
@@ -455,76 +455,84 @@
       <section class="page" id="page-settings">
         <header class="page-head">
           <div>
-            <h1>Einstellungen</h1>
-            <p class="page-sub">Sticks, Darstellung und lokale Daten.</p>
+            <h1 data-i18n="settings.title">Einstellungen</h1>
+            <p class="page-sub" data-i18n="settings.subtitle">Sticks, Darstellung und lokale Daten.</p>
           </div>
         </header>
 
         <div class="settings-grid">
           <section class="panel">
-            <div class="panel-head"><h2>Allgemein</h2></div>
+            <div class="panel-head"><h2 data-i18n="settings.general">Allgemein</h2></div>
             <div class="panel-body">
               <label class="switch-row">
                 <span>
-                  <span class="switch-title">Minimiert starten</span>
-                  <span class="switch-desc">Fenster bleibt beim Start im Hintergrund.</span>
+                  <span class="switch-title" data-i18n="settings.startMinimized">Minimiert starten</span>
+                  <span class="switch-desc" data-i18n="settings.startMinimizedDesc">Fenster bleibt beim Start im Hintergrund.</span>
                 </span>
                 <input type="checkbox" id="setting-start-minimized" class="switch">
               </label>
               <label class="switch-row">
                 <span>
-                  <span class="switch-title">Autostart mit Windows</span>
-                  <span class="switch-desc">Trägt die App in den Autostart ein.</span>
+                  <span class="switch-title" data-i18n="settings.autostart">Autostart mit Windows</span>
+                  <span class="switch-desc" data-i18n="settings.autostartDesc">Trägt die App in den Autostart ein.</span>
                 </span>
                 <input type="checkbox" id="setting-autostart" class="switch">
               </label>
               <div class="field">
-                <label for="setting-theme">Darstellung</label>
+                <label for="setting-theme" data-i18n="settings.appearance">Darstellung</label>
                 <select id="setting-theme" class="input">
-                  <option value="light">Hell</option>
-                  <option value="dark">Dunkel</option>
-                  <option value="system">Systemeinstellung</option>
+                  <option value="light" data-i18n="settings.theme.light">Hell</option>
+                  <option value="dark" data-i18n="settings.theme.dark">Dunkel</option>
+                  <option value="system" data-i18n="settings.theme.system">Systemeinstellung</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="setting-language" data-i18n="settings.language">Sprache</label>
+                <select id="setting-language" class="input">
+                  <option value="system" data-i18n="settings.language.system">Systemeinstellung</option>
+                  <option value="de" data-i18n="settings.language.de">Deutsch</option>
+                  <option value="en" data-i18n="settings.language.en">English</option>
                 </select>
               </div>
             </div>
           </section>
 
           <section class="panel">
-            <div class="panel-head"><h2>Zeiger und Scrollen</h2></div>
+            <div class="panel-head"><h2 data-i18n="settings.pointer">Zeiger und Scrollen</h2></div>
             <div class="panel-body">
               <div class="field">
                 <div class="field-head">
-                  <label for="setting-deadzone">Deadzone</label>
+                  <label for="setting-deadzone" data-i18n="settings.deadzone">Deadzone</label>
                   <span class="range-value" id="deadzone-value">0.15</span>
                 </div>
                 <input type="range" id="setting-deadzone" min="0" max="0.5" step="0.01" value="0.15" class="range">
-                <p class="field-hint">Bewegungen unterhalb dieses Werts werden ignoriert.</p>
+                <p class="field-hint" data-i18n="settings.deadzoneHint">Bewegungen unterhalb dieses Werts werden ignoriert.</p>
               </div>
               <div class="field">
                 <div class="field-head">
-                  <label for="setting-sensitivity">Zeiger-Geschwindigkeit</label>
+                  <label for="setting-sensitivity" data-i18n="settings.sensitivity">Zeiger-Geschwindigkeit</label>
                   <span class="range-value" id="sensitivity-value">1.0</span>
                 </div>
                 <input type="range" id="setting-sensitivity" min="0.1" max="3" step="0.1" value="1.0" class="range">
               </div>
               <div class="field">
                 <div class="field-head">
-                  <label for="setting-scrollspeed">Scroll-Geschwindigkeit</label>
+                  <label for="setting-scrollspeed" data-i18n="settings.scrollSpeed">Scroll-Geschwindigkeit</label>
                   <span class="range-value" id="scrollspeed-value">1.0</span>
                 </div>
                 <input type="range" id="setting-scrollspeed" min="0.1" max="3" step="0.1" value="1.0" class="range">
               </div>
               <label class="switch-row">
                 <span>
-                  <span class="switch-title">Sticks tauschen</span>
-                  <span class="switch-desc">Zeiger auf dem rechten Stick, Scrollen links.</span>
+                  <span class="switch-title" data-i18n="settings.swapSticks">Sticks tauschen</span>
+                  <span class="switch-desc" data-i18n="settings.swapSticksDesc">Zeiger auf dem rechten Stick, Scrollen links.</span>
                 </span>
                 <input type="checkbox" id="setting-swapsticks" class="switch">
               </label>
               <label class="switch-row">
                 <span>
-                  <span class="switch-title">Rumble</span>
-                  <span class="switch-desc">Vibration bei ausgelösten Aktionen anfordern.</span>
+                  <span class="switch-title" data-i18n="settings.rumble">Rumble</span>
+                  <span class="switch-desc" data-i18n="settings.rumbleDesc">Vibration bei ausgelösten Aktionen anfordern.</span>
                 </span>
                 <input type="checkbox" id="setting-rumble" class="switch">
               </label>
@@ -533,43 +541,43 @@
 
           <section class="panel panel-wide">
             <div class="panel-head">
-              <h2>Updates</h2>
+              <h2 data-i18n="settings.updates">Updates</h2>
               <span class="panel-note" id="update-version">Version 1.1.0</span>
             </div>
             <div class="panel-body">
-              <p class="update-status" id="update-status">Noch nicht geprüft.</p>
+              <p class="update-status" id="update-status" data-i18n="update.status.idle">Noch nicht geprüft.</p>
               <div class="update-progress" id="update-progress" hidden>
                 <span class="update-progress-bar" id="update-progress-bar"></span>
               </div>
               <div class="button-row">
-                <button type="button" class="btn btn-quiet" id="btn-update-check">Nach Updates suchen</button>
-                <button type="button" class="btn btn-primary" id="btn-update-download" hidden>Update herunterladen</button>
-                <button type="button" class="btn btn-primary" id="btn-update-install" hidden>Neu starten und installieren</button>
+                <button type="button" class="btn btn-quiet" id="btn-update-check" data-i18n="update.button.check">Nach Updates suchen</button>
+                <button type="button" class="btn btn-primary" id="btn-update-download" hidden data-i18n="update.button.download">Update herunterladen</button>
+                <button type="button" class="btn btn-primary" id="btn-update-install" hidden data-i18n="update.button.install">Neu starten und installieren</button>
               </div>
               <label class="switch-row">
                 <span>
-                  <span class="switch-title">Beim Start nach Updates suchen</span>
-                  <span class="switch-desc">Fragt einmalig die neueste Version bei GitHub ab. Keine Telemetrie, kein Download ohne deine Zustimmung.</span>
+                  <span class="switch-title" data-i18n="settings.updateCheck">Beim Start nach Updates suchen</span>
+                  <span class="switch-desc" data-i18n="settings.updateCheckDesc">Fragt einmalig die neueste Version bei GitHub ab. Keine Telemetrie, kein Download ohne deine Zustimmung.</span>
                 </span>
                 <input type="checkbox" id="setting-update-check" class="switch">
               </label>
-              <p class="field-hint">Installiert wird nur, was du ausdrücklich herunterlädst. Der Installer ersetzt die App und startet sie neu.</p>
+              <p class="field-hint" data-i18n="settings.updateHint">Installiert wird nur, was du ausdrücklich herunterlädst. Der Installer ersetzt die App und startet sie neu.</p>
             </div>
           </section>
 
           <section class="panel panel-wide">
             <div class="panel-head">
-              <h2>Daten</h2>
+              <h2 data-i18n="settings.data">Daten</h2>
               <span class="panel-note">config.json</span>
             </div>
             <div class="panel-body">
-              <p class="field-hint">Einstellungen und Profile liegen als lesbare JSON-Datei im App-Datenordner. Kein Cloud-Sync, keine Telemetrie.</p>
+              <p class="field-hint" data-i18n="settings.dataHint">Einstellungen und Profile liegen als lesbare JSON-Datei im App-Datenordner. Kein Cloud-Sync, keine Telemetrie.</p>
               <div class="button-row">
-                <button type="button" class="btn btn-quiet" id="btn-export-config">Exportieren</button>
-                <button type="button" class="btn btn-quiet" id="btn-import-config">Importieren</button>
+                <button type="button" class="btn btn-quiet" id="btn-export-config" data-i18n="settings.export">Exportieren</button>
+                <button type="button" class="btn btn-quiet" id="btn-import-config" data-i18n="settings.import">Importieren</button>
               </div>
               <div class="button-row">
-                <button type="button" class="btn btn-quiet btn-quiet--danger" id="btn-reset-config">Auf Standard zurücksetzen</button>
+                <button type="button" class="btn btn-quiet btn-quiet--danger" id="btn-reset-config" data-i18n="settings.reset">Auf Standard zurücksetzen</button>
               </div>
             </div>
           </section>
@@ -584,14 +592,15 @@
   <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal" id="modal">
       <div class="modal-head">
-        <h3 id="modal-title">Titel</h3>
-        <button type="button" class="modal-close" id="modal-close" aria-label="Schließen">&times;</button>
+        <h3 id="modal-title" data-i18n="modal.title">Titel</h3>
+        <button type="button" class="modal-close" id="modal-close" aria-label="Schließen" data-i18n-aria-label="modal.close">&times;</button>
       </div>
       <div class="modal-body" id="modal-body"></div>
       <div class="modal-foot" id="modal-footer"></div>
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

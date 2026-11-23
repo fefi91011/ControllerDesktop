@@ -9,28 +9,32 @@ const path = require('path');
 const fs = require('fs');
 const { keyboard, Key, mouse, Button, Point } = require('@nut-tree-fork/nut-js');
 const { autoUpdater } = require('electron-updater');
+const i18n = require('./src/i18n');
+
+const t = (key, params) => i18n.t(key, params);
 
 // ─── Standardbelegung ─────────────────────────────────────────
 // Wird nur beim ersten Start (oder nach „Zurücksetzen“) verwendet.
+// nameKey übersetzt die Bezeichnung, solange der Nutzer sie nicht selbst ändert.
 const DEFAULT_MAPPINGS = [
-  { name: 'Bestätigen', trigger: 'button-0', actionType: 'key', action: { key: 'ENTER', modifiers: [] }, cooldown: 150 },
-  { name: 'Abbrechen', trigger: 'button-1', actionType: 'key', action: { key: 'ESC', modifiers: [] }, cooldown: 150 },
-  { name: 'Löschen', trigger: 'button-2', actionType: 'key', action: { key: 'BACKSPACE', modifiers: [] }, cooldown: 80 },
-  { name: 'Leertaste', trigger: 'button-3', actionType: 'key', action: { key: 'SPACE', modifiers: [] }, cooldown: 80 },
-  { name: 'Nach oben', trigger: 'button-12', actionType: 'key', action: { key: 'UP', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach unten', trigger: 'button-13', actionType: 'key', action: { key: 'DOWN', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach links', trigger: 'button-14', actionType: 'key', action: { key: 'LEFT', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach rechts', trigger: 'button-15', actionType: 'key', action: { key: 'RIGHT', modifiers: [] }, cooldown: 90 },
-  { name: 'Klick links', trigger: 'button-10', actionType: 'mouse', action: { action: 'click' }, cooldown: 200 },
-  { name: 'Klick rechts', trigger: 'button-11', actionType: 'mouse', action: { action: 'rightclick' }, cooldown: 200 },
-  { name: 'App minimieren', trigger: 'button-8', actionType: 'app', action: { command: 'minimize' }, cooldown: 500 },
-  { name: 'App an/aus', trigger: 'button-9', actionType: 'app', action: { command: 'toggle' }, cooldown: 500 }
+  { name: 'Bestätigen', nameKey: 'mapping.default.confirm', trigger: 'button-0', actionType: 'key', action: { key: 'ENTER', modifiers: [] }, cooldown: 150 },
+  { name: 'Abbrechen', nameKey: 'mapping.default.cancel', trigger: 'button-1', actionType: 'key', action: { key: 'ESC', modifiers: [] }, cooldown: 150 },
+  { name: 'Löschen', nameKey: 'mapping.default.remove', trigger: 'button-2', actionType: 'key', action: { key: 'BACKSPACE', modifiers: [] }, cooldown: 80 },
+  { name: 'Leertaste', nameKey: 'mapping.default.space', trigger: 'button-3', actionType: 'key', action: { key: 'SPACE', modifiers: [] }, cooldown: 80 },
+  { name: 'Nach oben', nameKey: 'mapping.default.up', trigger: 'button-12', actionType: 'key', action: { key: 'UP', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach unten', nameKey: 'mapping.default.down', trigger: 'button-13', actionType: 'key', action: { key: 'DOWN', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach links', nameKey: 'mapping.default.left', trigger: 'button-14', actionType: 'key', action: { key: 'LEFT', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach rechts', nameKey: 'mapping.default.right', trigger: 'button-15', actionType: 'key', action: { key: 'RIGHT', modifiers: [] }, cooldown: 90 },
+  { name: 'Klick links', nameKey: 'mapping.default.clickLeft', trigger: 'button-10', actionType: 'mouse', action: { action: 'click' }, cooldown: 200 },
+  { name: 'Klick rechts', nameKey: 'mapping.default.clickRight', trigger: 'button-11', actionType: 'mouse', action: { action: 'rightclick' }, cooldown: 200 },
+  { name: 'App minimieren', nameKey: 'mapping.default.appMinimize', trigger: 'button-8', actionType: 'app', action: { command: 'minimize' }, cooldown: 500 },
+  { name: 'App an/aus', nameKey: 'mapping.default.appToggle', trigger: 'button-9', actionType: 'app', action: { command: 'toggle' }, cooldown: 500 }
 ];
 
 const DEFAULT_CONFIG = {
   version: 2,
   theme: 'light',
-  language: 'de',
+  language: 'system',
   startMinimized: false,
   autoStart: false,
   updates: { checkOnStart: true },
@@ -142,16 +146,16 @@ function createWindow() {
 // ─── Tray ─────────────────────────────────────────────────────
 function buildTrayMenu() {
   return Menu.buildFromTemplate([
-    { label: 'ControllerDesktop öffnen', click: () => showWindow() },
+    { label: t('tray.open'), click: () => showWindow() },
     { type: 'separator' },
     {
       label: controllerState.connected
-        ? `Controller: ${controllerState.name}`
-        : 'Controller: nicht verbunden',
+        ? t('tray.controller', { name: controllerState.name })
+        : t('tray.noController'),
       enabled: false
     },
     {
-      label: 'Eingaben pausieren',
+      label: t('tray.pause'),
       type: 'checkbox',
       checked: inputPaused,
       click: item => setInputPaused(item.checked)
@@ -159,7 +163,7 @@ function buildTrayMenu() {
     ...(updatesSupported()
       ? [
           {
-            label: 'Nach Updates suchen',
+            label: t('tray.checkUpdates'),
             click: () => {
               showWindow();
               checkForUpdates();
@@ -169,7 +173,7 @@ function buildTrayMenu() {
       : []),
     { type: 'separator' },
     {
-      label: 'Fenster an/aus',
+      label: t('tray.toggleWindow'),
       click: () => {
         if (!mainWindow) return;
         if (mainWindow.isVisible()) mainWindow.hide();
@@ -178,7 +182,7 @@ function buildTrayMenu() {
     },
     { type: 'separator' },
     {
-      label: 'Beenden',
+      label: t('tray.quit'),
       click: () => {
         isQuitting = true;
         app.quit();
@@ -189,8 +193,9 @@ function buildTrayMenu() {
 
 function refreshTray() {
   if (!tray) return;
-  const status = controllerState.connected ? controllerState.name : 'kein Controller';
-  tray.setToolTip(`ControllerDesktop – ${status}${inputPaused ? ' – pausiert' : ''}`);
+  const status = controllerState.connected ? controllerState.name : t('status.noController');
+  const tooltip = t('tray.tooltip', { status }) + (inputPaused ? ` – ${t('tray.paused')}` : '');
+  tray.setToolTip(tooltip);
   tray.setContextMenu(buildTrayMenu());
 }
 
@@ -483,6 +488,7 @@ ipcMain.handle('save-config', (event, nextConfig) => {
   if (!nextConfig || typeof nextConfig !== 'object') return config;
 
   const autoStartChanged = Boolean(nextConfig.autoStart) !== Boolean(config.autoStart);
+  const languageChanged = (nextConfig.language || 'system') !== (config.language || 'system');
   config = {
     ...config,
     ...nextConfig,
@@ -495,6 +501,10 @@ ipcMain.handle('save-config', (event, nextConfig) => {
 
   saveConfig();
   if (autoStartChanged) applyAutoStart(config.autoStart);
+  if (languageChanged) {
+    i18n.setLanguage(config.language, app.getLocale());
+    refreshTray();
+  }
   return config;
 });
 
@@ -563,30 +573,31 @@ function updatesSupported() {
   return app.isPackaged && process.platform === 'win32';
 }
 
+// Liefert entweder einen Übersetzungsschlüssel (bekannte Fälle) oder den rohen
+// Fehlertext. Der Schlüssel erlaubt dem Renderer, die Meldung später erneut zu
+// übersetzen, wenn die Sprache gewechselt wird.
 function describeUpdateError(error) {
   const message = String(error && error.message ? error.message : error).split('\n')[0].slice(0, 200);
-  if (/404|latest\.yml|cannot find/i.test(message)) return 'Noch kein Update veröffentlicht.';
-  if (/net::|ENOTFOUND|ECONNREFUSED|EAI_AGAIN|network/i.test(message)) return 'Keine Verbindung zur Update-Quelle.';
-  return message;
+  if (/404|latest\.yml|cannot find/i.test(message)) return { messageKey: 'update.error.noRelease' };
+  if (/net::|ENOTFOUND|ECONNREFUSED|EAI_AGAIN|network/i.test(message)) return { messageKey: 'update.error.offline' };
+  return { message };
 }
 
 // Ein Fehler trifft sowohl als Event als auch als abgelehntes Promise ein.
 // Die Prüfung auf identischen Zustand verhindert doppelte Meldungen.
 function reportUpdateError(error) {
-  const message = describeUpdateError(error);
+  const described = describeUpdateError(error);
+  const messageKey = described.messageKey || null;
+  const message = messageKey ? t(messageKey) : described.message;
   if (updateState.status === 'error' && updateState.message === message) return;
-  publishUpdateState({ status: 'error', message });
+  publishUpdateState({ status: 'error', message, messageKey });
 }
 
 // Gemeinsamer Rahmen für Prüfen und Herunterladen: Support-Check plus Fehlerbehandlung.
 async function runUpdateTask(task) {
   if (!updatesSupported()) {
-    publishUpdateState({
-      status: 'unavailable',
-      message: app.isPackaged
-        ? 'Updates werden nur unter Windows unterstützt.'
-        : 'Im Entwicklungsmodus gibt es keine Updates.'
-    });
+    const messageKey = app.isPackaged ? 'update.error.windowsOnly' : 'update.error.devMode';
+    publishUpdateState({ status: 'unavailable', messageKey, message: t(messageKey) });
     return updateState;
   }
 
@@ -607,9 +618,9 @@ function setupUpdater() {
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = true;
 
-  autoUpdater.on('checking-for-update', () => publishUpdateState({ status: 'checking', message: '' }));
-  autoUpdater.on('update-available', info => publishUpdateState({ status: 'available', version: info.version, message: '' }));
-  autoUpdater.on('update-not-available', () => publishUpdateState({ status: 'current', message: '' }));
+  autoUpdater.on('checking-for-update', () => publishUpdateState({ status: 'checking', message: '', messageKey: null }));
+  autoUpdater.on('update-available', info => publishUpdateState({ status: 'available', version: info.version, message: '', messageKey: null }));
+  autoUpdater.on('update-not-available', () => publishUpdateState({ status: 'current', message: '', messageKey: null }));
   autoUpdater.on('download-progress', progress => publishUpdateState({ status: 'downloading', percent: Math.round(progress.percent) }));
   autoUpdater.on('update-downloaded', info => publishUpdateState({ status: 'ready', version: info.version, percent: 100 }));
   autoUpdater.on('error', reportUpdateError);
@@ -643,6 +654,9 @@ if (!hasLock) {
   app.on('second-instance', () => showWindow());
 
   app.whenReady().then(async () => {
+    // app.getLocale() liefert unter Windows erst nach 'ready' die echte Sprache.
+    i18n.setLanguage(config.language, app.getLocale());
+
     createWindow();
     createTray();
     initCursor();

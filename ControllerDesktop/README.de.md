@@ -27,6 +27,7 @@ ControllerDesktop liest den Controller über die Gamepad-API des Browsers und in
 - **Profile** – getrennte Belegungen, im Betrieb umschaltbar
 - **Bildschirmtastatur** – Tasten an das aktive Fenster senden
 - **Live-Ansicht** – gedrückte Buttons, Stickpositionen und aktives Profil in Echtzeit
+- **Deutsch und Englisch** – in den Einstellungen umschaltbar, folgt standardmäßig der Systemsprache
 - **Tray** – läuft im Hintergrund, zeigt den Verbindungsstatus und pausiert Eingaben sofort
 - **Standardmäßig lokal** – Einstellungen und Profile in einer lesbaren `config.json`, keine Cloud, keine Analytics
 
@@ -111,7 +112,7 @@ Voraussetzung ist Node 18+. Der Build läuft unter Windows; unter Linux braucht 
 ```
 main.js                        Hauptprozess: Fenster, Tray, Config, Eingaben, Updates
 preload.js                     IPC-Brücke (contextIsolation)
-src/                           Renderer: index.html, styles.css, app.js
+src/                           Renderer: index.html, styles.css, app.js, i18n.js
 build/icon.png                 App-Icon (Quelle für electron-builder)
 build/installer.nsh            NSIS-Anpassungen (App vor Update beenden, Registry)
 electron-builder.yml           Installer-, Portable- und Publish-Konfiguration

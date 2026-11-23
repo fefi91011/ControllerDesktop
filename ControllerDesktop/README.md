@@ -27,6 +27,7 @@ ControllerDesktop reads a controller through the browser Gamepad API and injects
 - **Profiles** – separate mapping sets, switchable at runtime
 - **On-screen keyboard** – send keystrokes to the focused window
 - **Live view** – the dashboard shows pressed buttons, stick positions and the active profile in real time
+- **German and English UI** – switchable in Settings, follows the system language by default
 - **Tray** – runs in the background, shows connection state, can pause input immediately
 - **Local by default** – settings and profiles in a plain `config.json`, no cloud, no analytics
 
@@ -111,7 +112,7 @@ Requires Node 18+. Build on Windows; on Linux electron-builder additionally need
 ```
 main.js                        main process: window, tray, config, input, updates
 preload.js                     IPC bridge (contextIsolation)
-src/                           renderer: index.html, styles.css, app.js
+src/                           renderer: index.html, styles.css, app.js, i18n.js
 build/icon.png                 app icon (source for electron-builder)
 build/installer.nsh            NSIS tweaks (stop app before update, registry)
 electron-builder.yml           installer, portable and publish configuration
@@ -122,7 +123,7 @@ docs/screenshots/              screenshots used in this README
 
 ## Notes
 
-- The interface is currently German; the screenshots show that state. An English UI is on the roadmap.
+- The interface is available in German and English (Settings → Language). It follows the system language by default; the screenshots show the German UI.
 - Windows SmartScreen may warn on first launch of an unsigned EXE ("More info" → "Run anyway"). No code-signing certificate is bundled.
 - nut-js uses the US keyboard layout; a few punctuation keys differ on a German layout.
 - Requires the standard Windows gamepad stack (XInput/DirectInput), no drivers.

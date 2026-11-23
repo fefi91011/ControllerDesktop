@@ -2,25 +2,26 @@
 // ControllerDesktop – Gamepad-Steuerung für Windows
 
 // ═══ Konfiguration ═══
+// nameKey wird angezeigt, solange der Nutzer den Namen nicht selbst ändert.
 const DEFAULT_MAPPINGS = [
-  { name: 'Bestätigen', trigger: 'button-0', actionType: 'key', action: { key: 'ENTER', modifiers: [] }, cooldown: 150 },
-  { name: 'Abbrechen', trigger: 'button-1', actionType: 'key', action: { key: 'ESC', modifiers: [] }, cooldown: 150 },
-  { name: 'Löschen', trigger: 'button-2', actionType: 'key', action: { key: 'BACKSPACE', modifiers: [] }, cooldown: 80 },
-  { name: 'Leertaste', trigger: 'button-3', actionType: 'key', action: { key: 'SPACE', modifiers: [] }, cooldown: 80 },
-  { name: 'Nach oben', trigger: 'button-12', actionType: 'key', action: { key: 'UP', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach unten', trigger: 'button-13', actionType: 'key', action: { key: 'DOWN', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach links', trigger: 'button-14', actionType: 'key', action: { key: 'LEFT', modifiers: [] }, cooldown: 90 },
-  { name: 'Nach rechts', trigger: 'button-15', actionType: 'key', action: { key: 'RIGHT', modifiers: [] }, cooldown: 90 },
-  { name: 'Klick links', trigger: 'button-10', actionType: 'mouse', action: { action: 'click' }, cooldown: 200 },
-  { name: 'Klick rechts', trigger: 'button-11', actionType: 'mouse', action: { action: 'rightclick' }, cooldown: 200 },
-  { name: 'App minimieren', trigger: 'button-8', actionType: 'app', action: { command: 'minimize' }, cooldown: 500 },
-  { name: 'App an/aus', trigger: 'button-9', actionType: 'app', action: { command: 'toggle' }, cooldown: 500 }
+  { name: 'Bestätigen', nameKey: 'mapping.default.confirm', trigger: 'button-0', actionType: 'key', action: { key: 'ENTER', modifiers: [] }, cooldown: 150 },
+  { name: 'Abbrechen', nameKey: 'mapping.default.cancel', trigger: 'button-1', actionType: 'key', action: { key: 'ESC', modifiers: [] }, cooldown: 150 },
+  { name: 'Löschen', nameKey: 'mapping.default.remove', trigger: 'button-2', actionType: 'key', action: { key: 'BACKSPACE', modifiers: [] }, cooldown: 80 },
+  { name: 'Leertaste', nameKey: 'mapping.default.space', trigger: 'button-3', actionType: 'key', action: { key: 'SPACE', modifiers: [] }, cooldown: 80 },
+  { name: 'Nach oben', nameKey: 'mapping.default.up', trigger: 'button-12', actionType: 'key', action: { key: 'UP', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach unten', nameKey: 'mapping.default.down', trigger: 'button-13', actionType: 'key', action: { key: 'DOWN', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach links', nameKey: 'mapping.default.left', trigger: 'button-14', actionType: 'key', action: { key: 'LEFT', modifiers: [] }, cooldown: 90 },
+  { name: 'Nach rechts', nameKey: 'mapping.default.right', trigger: 'button-15', actionType: 'key', action: { key: 'RIGHT', modifiers: [] }, cooldown: 90 },
+  { name: 'Klick links', nameKey: 'mapping.default.clickLeft', trigger: 'button-10', actionType: 'mouse', action: { action: 'click' }, cooldown: 200 },
+  { name: 'Klick rechts', nameKey: 'mapping.default.clickRight', trigger: 'button-11', actionType: 'mouse', action: { action: 'rightclick' }, cooldown: 200 },
+  { name: 'App minimieren', nameKey: 'mapping.default.appMinimize', trigger: 'button-8', actionType: 'app', action: { command: 'minimize' }, cooldown: 500 },
+  { name: 'App an/aus', nameKey: 'mapping.default.appToggle', trigger: 'button-9', actionType: 'app', action: { command: 'toggle' }, cooldown: 500 }
 ];
 
 const DEFAULT_CONFIG = {
   version: 2,
   theme: 'light',
-  language: 'de',
+  language: 'system',
   startMinimized: false,
   autoStart: false,
   updates: { checkOnStart: true },
@@ -57,12 +58,12 @@ if (!IS_ELECTRON) {
     getUpdateState: async () => ({
       status: 'unavailable',
       currentVersion: '1.1.0',
-      message: 'Nur in der installierten Windows-App verfügbar.'
+      message: ''
     }),
     checkForUpdates: async () => ({
       status: 'unavailable',
       currentVersion: '1.1.0',
-      message: 'Nur in der installierten Windows-App verfügbar.'
+      message: ''
     }),
     downloadUpdate: async () => ({ status: 'unavailable' }),
     installUpdate: async () => false,
@@ -89,6 +90,57 @@ const state = {
 
 const POINTER_SPEED = 16; // Pixel pro Frame bei Vollausschlag (~60 fps)
 
+// ═══ Sprache ═══
+const t = (key, params) => i18n.t(key, params);
+const tp = (key, count) => i18n.tp(key, count);
+
+// Trigger → Schlüssel der Standardbezeichnung. Wird genutzt, um gespeicherte
+// Standardnamen aus älteren Versionen nachträglich übersetzbar zu machen.
+const DEFAULT_NAME_KEYS = {
+  'button-0': 'mapping.default.confirm', 'button-1': 'mapping.default.cancel',
+  'button-2': 'mapping.default.remove', 'button-3': 'mapping.default.space',
+  'button-12': 'mapping.default.up', 'button-13': 'mapping.default.down',
+  'button-14': 'mapping.default.left', 'button-15': 'mapping.default.right',
+  'button-10': 'mapping.default.clickLeft', 'button-11': 'mapping.default.clickRight',
+  'button-8': 'mapping.default.appMinimize', 'button-9': 'mapping.default.appToggle'
+};
+
+function mappingName(mapping) {
+  if (!mapping) return '';
+  if (mapping.nameKey) return t(mapping.nameKey);
+  return mapping.name || t('mappings.untitled');
+}
+
+function applyStaticTranslations() {
+  const modalOpen = $('#modal-overlay').classList.contains('active');
+  $$('[data-i18n]').forEach(el => {
+    if (el.id === 'modal-title' && modalOpen) return;
+    el.textContent = t(el.dataset.i18n);
+  });
+  $$('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+  $$('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });
+  $$('[data-i18n-label]').forEach(el => { el.label = t(el.dataset.i18nLabel); });
+  $$('[data-i18n-aria-label]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel)));
+}
+
+// Setzt die Sprache und übersetzt alles Sichtbare neu (ohne Neuaufbau der App).
+function applyLanguage(preference, options = {}) {
+  const resolved = i18n.setLanguage(preference || 'system', navigator.language);
+  document.documentElement.lang = resolved;
+  applyStaticTranslations();
+  if (options.rerender === false) return resolved;
+
+  renderConnection();
+  renderProfileContext();
+  renderMappingsList();
+  renderProfilesList();
+  renderDashboardTable();
+  renderActivity();
+  renderKeyboard();
+  renderUpdateState(state.update ? { ...state.update } : { status: 'idle' });
+  return resolved;
+}
+
 // ═══ DOM-Helfer ═══
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -102,13 +154,12 @@ const TRIGGER_SHORT = {
   'axis-2-pos': 'Stick R →', 'axis-2-neg': 'Stick R ←', 'axis-3-pos': 'Stick R ↓', 'axis-3-neg': 'Stick R ↑'
 };
 
-const MOD_LABELS = { CTRL: 'Strg', ALT: 'Alt', SHIFT: 'Umschalt', META: 'Win' };
-
 // ═══ Start ═══
 async function init() {
   try {
     state.config = normalizeConfig(await window.api.getConfig());
     state.activeProfileId = state.config.activeProfile || 'default';
+    applyLanguage(state.config.language, { rerender: false });
 
     cacheControllerElements();
     setupNavigation();
@@ -133,7 +184,7 @@ async function init() {
     else requestAnimationFrame(tick);
   } catch (err) {
     console.error('Init error:', err);
-    showToast('Start fehlgeschlagen – siehe Konsole', 'error');
+    showToast(t('settings.startFailed'), 'error');
   }
 }
 
@@ -155,6 +206,8 @@ function normalizeConfig(raw) {
     profile.mappings.forEach(m => {
       m.trigger = normalizeTrigger(m.trigger);
       m.cooldown = Number(m.cooldown) || 0;
+      const defaultKey = DEFAULT_NAME_KEYS[m.trigger];
+      if (!m.nameKey && defaultKey && i18n.STRINGS.de[defaultKey] === m.name) m.nameKey = defaultKey;
     });
   });
   if (!cfg.profiles.some(p => p.id === cfg.activeProfile)) cfg.activeProfile = 'default';
@@ -219,7 +272,7 @@ function cacheControllerElements() {
 
 // ═══ Controller-Status ═══
 function cleanDeviceName(id) {
-  if (!id) return 'Unbekanntes Gerät';
+  if (!id) return t('device.unknown');
   const cut = id.split('(')[0].replace(/Vendor:.*$/i, '').trim();
   return (cut || id).slice(0, 42);
 }
@@ -232,19 +285,25 @@ function setConnection(connected, deviceId) {
   state.connected = connected;
   state.deviceName = nextName;
 
+  renderConnection();
+  window.api.reportControllerState({ connected, name: state.deviceName });
+}
+
+// Zeichnet nur die Verbindungsstellen – auch nach einem Sprachwechsel aufrufbar.
+function renderConnection() {
+  const connected = state.connected;
+
   $('#status-dot').classList.toggle('connected', connected);
-  $('#status-text').textContent = connected ? state.deviceName : 'Kein Controller';
+  $('#status-text').textContent = connected ? state.deviceName : t('status.noController');
 
   const badge = $('#controller-badge');
-  badge.textContent = connected ? 'Verbunden' : 'Nicht verbunden';
+  badge.textContent = connected ? t('dashboard.connected') : t('dashboard.disconnected');
   badge.classList.toggle('connected', connected);
 
   $('#controller-info').textContent = connected
-    ? `${state.deviceName} erkannt. Eingaben werden direkt umgesetzt.`
-    : 'Verbinde einen Controller, um zu beginnen.';
-  $('#pad-device').textContent = connected ? state.deviceName : 'Kein Gerät';
-
-  window.api.reportControllerState({ connected, name: state.deviceName });
+    ? t('dashboard.infoConnected', { name: state.deviceName })
+    : t('dashboard.infoDisconnected');
+  $('#pad-device').textContent = connected ? state.deviceName : t('dashboard.noDevice');
 }
 
 function firstGamepad() {
@@ -270,15 +329,15 @@ function tick() {
 function bindWindowEvents() {
   window.addEventListener('gamepadconnected', e => {
     setConnection(true, e.gamepad.id);
-    showToast('Controller verbunden', 'success');
-    addActivity(`Verbunden: ${cleanDeviceName(e.gamepad.id)}`);
+    showToast(t('toast.controllerConnected'), 'success');
+    addActivity('activity.connected', { name: cleanDeviceName(e.gamepad.id) });
   });
 
   window.addEventListener('gamepaddisconnected', () => {
     if (firstGamepad()) return;
     setConnection(false, null);
-    showToast('Controller getrennt', 'info');
-    addActivity('Controller getrennt');
+    showToast(t('toast.controllerDisconnected'), 'info');
+    addActivity('activity.disconnected');
   });
 
   document.addEventListener('keydown', e => {
@@ -289,8 +348,8 @@ function bindWindowEvents() {
 
   if (typeof window.api.onInputPaused === 'function') {
     window.api.onInputPaused(paused => {
-      showToast(paused ? 'Eingaben pausiert (Tray)' : 'Eingaben wieder aktiv', paused ? 'info' : 'success');
-      addActivity(paused ? 'Eingaben pausiert' : 'Eingaben aktiv');
+      showToast(paused ? t('toast.inputPaused') : t('toast.inputResumed'), paused ? 'info' : 'success');
+      addActivity(paused ? 'activity.paused' : 'activity.resumed');
     });
   }
 
@@ -390,9 +449,9 @@ function fireTrigger(trigger, now) {
 }
 
 async function runMapping(mapping) {
-  state.lastInput = mapping.name;
-  $('#fact-last-input').textContent = mapping.name;
-  addActivity(`${mapping.name} · ${actionLabel(mapping)}`);
+  state.lastInput = mappingName(mapping);
+  $('#fact-last-input').textContent = state.lastInput;
+  addActivity('activity.triggered', { name: state.lastInput, action: actionLabel(mapping) });
 
   try {
     await window.api.executeAction({
@@ -408,20 +467,24 @@ function actionLabel(mapping) {
   const action = mapping.action || {};
   switch (mapping.actionType) {
     case 'key': {
-      const parts = (action.modifiers || []).map(m => MOD_LABELS[m] || m);
+      const parts = (action.modifiers || []).map(m => t(`mod.${String(m).toLowerCase()}`));
       if (action.key) parts.push(action.key);
-      return parts.join(' + ') || 'Taste';
+      return parts.join(' + ') || t('action.keyFallback');
     }
     case 'mouse':
-      return { click: 'Linksklick', doubleclick: 'Doppelklick', rightclick: 'Rechtsklick' }[action.action] || 'Mausklick';
+      return ['click', 'doubleclick', 'rightclick'].includes(action.action)
+        ? t(`mappings.mouse.${action.action}`)
+        : t('action.mouseFallback');
     case 'scroll':
-      return action.direction === 'up' ? 'Scrollen hoch' : 'Scrollen runter';
+      return action.direction === 'up' ? t('action.scrollUp') : t('action.scrollDown');
     case 'macro':
-      return `Makro (${(action.steps || []).length} Schritte)`;
+      return t('action.macro', { count: (action.steps || []).length });
     case 'app':
-      return { minimize: 'App minimieren', toggle: 'App an/aus', close: 'App schließen' }[action.command] || 'App-Befehl';
+      return ['minimize', 'toggle', 'close'].includes(action.command)
+        ? t(`mappings.app.${action.command}`)
+        : t('action.appFallback');
     default:
-      return mapping.actionType || 'Aktion';
+      return mapping.actionType || t('action.fallback');
   }
 }
 
@@ -438,13 +501,13 @@ function renderProfileContext() {
   const name = profile ? profile.name : 'Standard';
   const count = profile ? profile.mappings.length : 0;
 
-  $('#profile-chip').textContent = `Profil: ${name}`;
-  $('#mappings-profile').textContent = `Profil: ${name}`;
+  $('#profile-chip').textContent = t('dashboard.profile', { name });
+  $('#mappings-profile').textContent = t('dashboard.profile', { name });
   $('#fact-profile').textContent = name;
   $('#fact-mappings').textContent = String(count);
   $('#pad-profile').textContent = name;
-  $('#mapping-count').textContent = `${count} ${count === 1 ? 'Mapping' : 'Mappings'}`;
-  $('#profiles-count').textContent = `${state.config.profiles.length} ${state.config.profiles.length === 1 ? 'Profil' : 'Profile'}`;
+  $('#mapping-count').textContent = tp('dashboard.mappingCount', count);
+  $('#profiles-count').textContent = tp('profiles.count', state.config.profiles.length);
 }
 
 function renderDashboardTable() {
@@ -455,7 +518,7 @@ function renderDashboardTable() {
   if (!profile || !profile.mappings.length) {
     const empty = document.createElement('p');
     empty.className = 'empty-state';
-    empty.textContent = 'Noch keine Mappings. Lege im Tab Mappings den ersten Eintrag an.';
+    empty.textContent = t('dashboard.noMappingsHint');
     container.append(empty);
     return;
   }
@@ -472,7 +535,7 @@ function renderDashboardTable() {
     text.className = 'map-text';
     const name = document.createElement('span');
     name.className = 'map-name';
-    name.textContent = mapping.name;
+    name.textContent = mappingName(mapping);
     const action = document.createElement('span');
     action.className = 'map-do';
     action.textContent = actionLabel(mapping);
@@ -510,7 +573,7 @@ function renderMappingsList() {
   if (!profile || !profile.mappings.length) {
     const empty = document.createElement('p');
     empty.className = 'empty-state';
-    empty.textContent = 'Noch keine Mappings.';
+    empty.textContent = t('dashboard.noMappings');
     list.append(empty);
     renderProfileContext();
     return;
@@ -524,7 +587,7 @@ function renderMappingsList() {
 
     const name = document.createElement('span');
     name.className = 'mapping-name';
-    name.textContent = mapping.name || 'Ohne Namen';
+    name.textContent = mappingName(mapping);
 
     const trigger = document.createElement('span');
     trigger.className = 'mapping-trigger';
@@ -547,7 +610,7 @@ function showMappingEditor(mapping) {
   renderMappingsList();
 
   if (mapping) {
-    $('#mapping-name').value = mapping.name || '';
+    $('#mapping-name').value = mappingName(mapping);
     $('#mapping-trigger').value = mapping.trigger || '';
     $('#mapping-action-type').value = mapping.actionType || 'key';
     $('#mapping-key').value = mapping.action?.key || '';
@@ -599,14 +662,14 @@ async function saveMapping() {
   const cooldown = Math.max(0, Math.min(5000, parseInt($('#mapping-cooldown').value, 10) || 0));
 
   if (!name || !trigger) {
-    showToast('Name und Controller-Eingabe sind nötig', 'error');
+    showToast(t('mappings.error.name'), 'error');
     return;
   }
 
   const conflict = profile.mappings.find((m, i) =>
     m.trigger === trigger && i !== state.selectedMappingIndex);
   if (conflict) {
-    showToast(`Diese Eingabe ist schon mit „${conflict.name}“ belegt`, 'error');
+    showToast(t('mappings.error.conflict', { name: mappingName(conflict) }), 'error');
     return;
   }
 
@@ -620,7 +683,7 @@ async function saveMapping() {
   if (actionType === 'key') {
     const key = $('#mapping-key').value.trim().toUpperCase();
     if (!key) {
-      showToast('Bitte eine Taste eintragen, z. B. ENTER', 'error');
+      showToast(t('mappings.error.key'), 'error');
       return;
     }
     action = { key, modifiers };
@@ -646,13 +709,13 @@ async function saveMapping() {
   renderMappingsList();
   renderDashboardTable();
   hideMappingEditor();
-  showToast('Mapping gespeichert', 'success');
+  showToast(t('mappings.saved'), 'success');
 }
 
 async function deleteMapping() {
   const profile = currentProfile();
   if (!profile || state.selectedMappingIndex < 0) {
-    showToast('Wähle zuerst ein Mapping aus', 'info');
+    showToast(t('mappings.selectFirst'), 'info');
     return;
   }
 
@@ -660,19 +723,20 @@ async function deleteMapping() {
   await persist();
   hideMappingEditor();
   renderDashboardTable();
-  showToast('Mapping gelöscht', 'info');
+  showToast(t('mappings.deleted'), 'info');
 }
 
 async function duplicateMapping() {
   const profile = currentProfile();
   if (!profile || state.selectedMappingIndex < 0) {
-    showToast('Wähle zuerst ein Mapping aus', 'info');
+    showToast(t('mappings.selectFirst'), 'info');
     return;
   }
 
   const copy = JSON.parse(JSON.stringify({
     ...profile.mappings[state.selectedMappingIndex],
-    name: `${profile.mappings[state.selectedMappingIndex].name} (Kopie)`
+    nameKey: undefined,
+    name: t('mappings.copy', { name: mappingName(profile.mappings[state.selectedMappingIndex]) })
   }));
   profile.mappings.push(copy);
   state.selectedMappingIndex = profile.mappings.length - 1;
@@ -680,7 +744,7 @@ async function duplicateMapping() {
   renderMappingsList();
   renderDashboardTable();
   showMappingEditor(copy);
-  showToast('Mapping dupliziert', 'success');
+  showToast(t('mappings.duplicated'), 'success');
 }
 
 // ═══ Bildschirmtastatur ═══
@@ -699,6 +763,16 @@ const KEYBOARD_ROWS = [
 ];
 
 function setupKeyboard() {
+  renderKeyboard();
+  $('#btn-keyboard-close').addEventListener('click', () => showPage('dashboard'));
+}
+
+const KEY_LEGENDS = {
+  CTRL: 'mod.ctrl', ALT: 'mod.alt', SHIFT: 'mod.shift', SPACE: 'key.space',
+  BACKSPACE: 'key.backspace', CAPSLOCK: 'key.caps', ENTER: 'key.enter', TAB: 'key.tab', ESC: 'key.esc'
+};
+
+function renderKeyboard() {
   const board = $('#screen-keyboard');
   board.replaceChildren();
 
@@ -707,12 +781,13 @@ function setupKeyboard() {
     rowEl.className = 'kb-row';
 
     row.forEach(([key, legend]) => {
+      const shown = KEY_LEGENDS[key] ? t(KEY_LEGENDS[key]) : legend;
       const keyEl = document.createElement('button');
       keyEl.type = 'button';
       keyEl.className = 'kb-key';
       keyEl.dataset.key = key;
-      keyEl.textContent = legend;
-      keyEl.title = `${legend} senden`;
+      keyEl.textContent = shown;
+      keyEl.title = t('keyboard.sendKey', { key: shown });
 
       if (key === 'SPACE') keyEl.classList.add('space');
       else if (['BACKSPACE', 'TAB', 'CAPSLOCK', 'ENTER'].includes(key)) keyEl.classList.add('wide');
@@ -721,7 +796,7 @@ function setupKeyboard() {
       keyEl.addEventListener('click', () => {
         keyEl.classList.add('pressed');
         setTimeout(() => keyEl.classList.remove('pressed'), 110);
-        sendKey(key, legend);
+        sendKey(key, shown);
       });
 
       rowEl.append(keyEl);
@@ -729,26 +804,24 @@ function setupKeyboard() {
 
     board.append(rowEl);
   });
-
-  $('#btn-keyboard-close').addEventListener('click', () => showPage('dashboard'));
 }
 
 function sendKey(key, legend) {
   window.api.executeAction({ type: 'key', key, modifiers: [] });
-  addActivity(`Taste gesendet: ${legend}`);
+  addActivity('keyboard.sent', { key: legend });
 }
 
 // ═══ Profile ═══
 function setupProfiles() {
   $('#btn-add-profile').addEventListener('click', () => {
-    showModal('Neues Profil', `
+    showModal(t('profiles.newTitle'), `
       <div class="field">
-        <label for="profile-name">Profilname</label>
-        <input type="text" id="profile-name" placeholder="z. B. Medien" class="input">
+        <label for="profile-name">${t('profiles.name')}</label>
+        <input type="text" id="profile-name" placeholder="${t('profiles.namePlaceholder')}" class="input">
       </div>
     `, [
-      { label: 'Abbrechen', className: 'btn-quiet', action: closeModal },
-      { label: 'Erstellen', className: 'btn-primary', action: createProfile }
+      { label: t('profiles.cancel'), className: 'btn-quiet', action: closeModal },
+      { label: t('profiles.create'), className: 'btn-primary', action: createProfile }
     ]);
     $('#profile-name').focus();
   });
@@ -769,14 +842,14 @@ function renderProfilesList() {
 
     const meta = document.createElement('span');
     meta.className = 'profile-meta';
-    meta.textContent = `${profile.mappings.length} Mappings`;
+    meta.textContent = tp('dashboard.mappingCount', profile.mappings.length);
 
     row.append(name, meta);
 
     if (profile.id === state.activeProfileId) {
       const mark = document.createElement('span');
       mark.className = 'profile-active-mark';
-      mark.textContent = 'aktiv';
+      mark.textContent = t('profiles.active');
       row.append(mark);
     }
 
@@ -787,7 +860,7 @@ function renderProfilesList() {
       const load = document.createElement('button');
       load.type = 'button';
       load.className = 'btn btn-quiet btn-sm';
-      load.textContent = 'Aktivieren';
+      load.textContent = t('profiles.activate');
       load.addEventListener('click', () => loadProfile(profile.id, true));
       actions.append(load);
     }
@@ -796,7 +869,7 @@ function renderProfilesList() {
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'btn btn-quiet btn-quiet--danger btn-sm';
-      remove.textContent = 'Löschen';
+      remove.textContent = t('profiles.delete');
       remove.addEventListener('click', () => deleteProfile(profile));
       actions.append(remove);
     }
@@ -812,7 +885,7 @@ async function createProfile() {
   const input = $('#profile-name');
   const name = input ? input.value.trim() : '';
   if (!name) {
-    showToast('Name erforderlich', 'error');
+    showToast(t('profiles.error.name'), 'error');
     return;
   }
 
@@ -820,7 +893,7 @@ async function createProfile() {
   await persist();
   closeModal();
   renderProfilesList();
-  showToast('Profil erstellt', 'success');
+  showToast(t('profiles.created'), 'success');
 }
 
 async function loadProfile(id, announce = false) {
@@ -836,14 +909,14 @@ async function loadProfile(id, announce = false) {
   renderDashboardTable();
 
   if (announce) {
-    showToast(`Profil „${profile.name}“ aktiv`, 'success');
-    addActivity(`Profil aktiv: ${profile.name}`);
+    showToast(t('profiles.activated', { name: profile.name }), 'success');
+    addActivity('activity.profileActive', { name: profile.name });
   }
 }
 
 async function deleteProfile(profile) {
   if (profile.id === 'default') {
-    showToast('Das Standardprofil bleibt erhalten', 'error');
+    showToast(t('profiles.defaultKept'), 'error');
     return;
   }
 
@@ -856,7 +929,7 @@ async function deleteProfile(profile) {
   renderProfilesList();
   renderMappingsList();
   renderDashboardTable();
-  showToast('Profil gelöscht', 'info');
+  showToast(t('profiles.deleted'), 'info');
 }
 
 // ═══ Einstellungen ═══
@@ -868,6 +941,11 @@ function setupSettings() {
 
   $('#setting-theme').addEventListener('change', e => {
     applyTheme(e.target.value);
+    save();
+  });
+
+  $('#setting-language').addEventListener('change', e => {
+    applyLanguage(e.target.value);
     save();
   });
 
@@ -890,6 +968,7 @@ function renderSettings() {
   $('#setting-start-minimized').checked = Boolean(cfg.startMinimized);
   $('#setting-autostart').checked = Boolean(cfg.autoStart);
   $('#setting-theme').value = cfg.theme || 'light';
+  $('#setting-language').value = cfg.language || 'system';
   $('#setting-deadzone').value = cfg.controller.deadzone;
   $('#setting-sensitivity').value = cfg.controller.mouseSensitivity;
   $('#setting-scrollspeed').value = cfg.controller.scrollSpeed;
@@ -907,6 +986,7 @@ async function saveSettings() {
   cfg.startMinimized = $('#setting-start-minimized').checked;
   cfg.autoStart = $('#setting-autostart').checked;
   cfg.theme = $('#setting-theme').value;
+  cfg.language = $('#setting-language').value;
   cfg.controller.deadzone = parseFloat($('#setting-deadzone').value);
   cfg.controller.mouseSensitivity = parseFloat($('#setting-sensitivity').value);
   cfg.controller.scrollSpeed = parseFloat($('#setting-scrollspeed').value);
@@ -931,7 +1011,7 @@ function exportConfig() {
   link.download = 'controllerdesktop-config.json';
   link.click();
   URL.revokeObjectURL(url);
-  showToast('Konfiguration exportiert', 'success');
+  showToast(t('settings.exported'), 'success');
 }
 
 function importConfig() {
@@ -943,39 +1023,41 @@ function importConfig() {
     if (!file) return;
     try {
       const imported = JSON.parse(await file.text());
-      if (!imported || !Array.isArray(imported.profiles)) throw new Error('Kein gültiges Profil enthalten');
+      if (!imported || !Array.isArray(imported.profiles)) throw new Error(t('settings.invalidFile'));
       state.config = normalizeConfig(imported);
       state.activeProfileId = state.config.activeProfile || 'default';
       await persist();
       applyTheme(state.config.theme);
+      applyLanguage(state.config.language, { rerender: false });
       renderSettings();
       renderAll();
-      showToast('Konfiguration importiert', 'success');
+      showToast(t('settings.imported'), 'success');
     } catch (err) {
       console.error('Import error:', err);
-      showToast('Import fehlgeschlagen – Datei prüfen', 'error');
+      showToast(t('settings.importFailed'), 'error');
     }
   });
   input.click();
 }
 
 function resetConfig() {
-  showModal('Auf Standard zurücksetzen', `
-    <p>Alle Mappings, Profile und Einstellungen werden durch die Standardwerte ersetzt.</p>
-    <p class="field-hint">Die aktuelle Konfiguration wird vorher nicht gesichert.</p>
+  showModal(t('settings.resetTitle'), `
+    <p>${t('settings.resetBody')}</p>
+    <p class="field-hint">${t('settings.resetHint')}</p>
   `, [
-    { label: 'Abbrechen', className: 'btn-quiet', action: closeModal },
-    { label: 'Zurücksetzen', className: 'btn-quiet btn-quiet--danger', action: async () => {
+    { label: t('mappings.cancel'), className: 'btn-quiet', action: closeModal },
+    { label: t('settings.resetConfirm'), className: 'btn-quiet btn-quiet--danger', action: async () => {
       state.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
       state.activeProfileId = 'default';
       state.selectedMappingIndex = -1;
       await persist();
       applyTheme(state.config.theme);
+      applyLanguage(state.config.language, { rerender: false });
       renderSettings();
       hideMappingEditor();
       renderAll();
       closeModal();
-      showToast('Standardwerte wiederhergestellt', 'success');
+      showToast(t('settings.resetDone'), 'success');
     } }
   ]);
 }
@@ -1002,7 +1084,7 @@ function setupUpdates() {
   if (typeof window.api.getUpdateState === 'function') {
     window.api.getUpdateState().then(renderUpdateState).catch(() => {});
   } else {
-    renderUpdateState({ status: 'unavailable', message: 'Updates stehen nur in der installierten App zur Verfügung.' });
+    renderUpdateState({ status: 'unavailable' });
   }
 }
 
@@ -1012,40 +1094,40 @@ function renderUpdateState(next) {
   const update = state.update;
   const version = update.currentVersion || state.version;
 
-  $('#update-version').textContent = `Version ${version}`;
+  $('#update-version').textContent = t('settings.version', { version });
 
   const status = $('#update-status');
   status.classList.remove('is-ready', 'is-error');
 
   switch (update.status) {
     case 'checking':
-      status.textContent = 'Suche nach Updates …';
+      status.textContent = t('update.status.checking');
       break;
     case 'current':
-      status.textContent = 'Du nutzt die neueste Version.';
+      status.textContent = t('update.status.current');
       status.classList.add('is-ready');
       break;
     case 'available':
-      status.textContent = update.portable
-        ? `Version ${update.version} ist verfügbar. Portable-Version: lade die neue EXE aus den Releases.`
-        : `Version ${update.version} ist verfügbar.`;
+      status.textContent = t(update.portable ? 'update.status.availablePortable' : 'update.status.available', { version: update.version });
       break;
     case 'downloading':
-      status.textContent = `Update wird geladen … ${update.percent || 0} %`;
+      status.textContent = t('update.status.downloading', { percent: update.percent || 0 });
       break;
     case 'ready':
-      status.textContent = `Version ${update.version} ist bereit. Ein Neustart installiert sie.`;
+      status.textContent = t('update.status.ready', { version: update.version });
       status.classList.add('is-ready');
       break;
-    case 'error':
-      status.textContent = `Prüfung fehlgeschlagen: ${update.message || 'unbekannter Fehler'}`;
+    case 'error': {
+      const message = update.messageKey ? t(update.messageKey) : (update.message || t('update.unknownError'));
+      status.textContent = t('update.status.error', { message });
       status.classList.add('is-error');
       break;
+    }
     case 'unavailable':
-      status.textContent = update.message || 'Updates stehen nur in der installierten Windows-App zur Verfügung.';
+      status.textContent = update.messageKey ? t(update.messageKey) : (update.message || t('update.status.unavailable'));
       break;
     default:
-      status.textContent = 'Noch nicht geprüft.';
+      status.textContent = t('update.status.idle');
   }
 
   const downloading = update.status === 'downloading';
@@ -1067,27 +1149,27 @@ async function handleQuickAction(action) {
   switch (action) {
     case 'toggle-app':
       await window.api.toggleApp();
-      addActivity('App an/aus');
+      addActivity('activity.toggleApp');
       break;
     case 'minimize':
       await window.api.minimizeApp();
-      addActivity('App minimiert');
+      addActivity('activity.minimized');
       break;
     case 'screenshot':
       await window.api.executeAction({ type: 'key', key: 'PRINTSCREEN', modifiers: [] });
-      addActivity('Screenshot');
+      addActivity('activity.screenshot');
       break;
     case 'volume-up':
       await window.api.executeAction({ type: 'key', key: 'VOLUMEUP', modifiers: [] });
-      addActivity('Lautstärke erhöht');
+      addActivity('activity.volumeUp');
       break;
     case 'volume-down':
       await window.api.executeAction({ type: 'key', key: 'VOLUMEDOWN', modifiers: [] });
-      addActivity('Lautstärke gesenkt');
+      addActivity('activity.volumeDown');
       break;
     case 'mute':
       await window.api.executeAction({ type: 'key', key: 'VOLUMEMUTE', modifiers: [] });
-      addActivity('Ton stumm');
+      addActivity('activity.mute');
       break;
   }
 }
@@ -1138,15 +1220,27 @@ function showToast(message, type = 'info') {
 }
 
 // ═══ Verlauf ═══
-function addActivity(text) {
-  const time = new Date().toLocaleTimeString('de-DE', {
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
-  state.activity.unshift({ time, text });
+// Einträge werden als Schlüssel + Parameter gespeichert, damit sie bei einem
+// Sprachwechsel mit übersetzt werden.
+function addActivity(key, params) {
+  state.activity.unshift({ time: new Date(), key, params });
   if (state.activity.length > 40) state.activity.length = 40;
+  renderActivity();
+}
 
+function renderActivity() {
   const log = $('#activity-log');
   log.replaceChildren();
+
+  if (!state.activity.length) {
+    const empty = document.createElement('p');
+    empty.className = 'empty-state';
+    empty.textContent = t('dashboard.activityEmpty');
+    log.append(empty);
+    return;
+  }
+
+  const locale = i18n.getLanguage() === 'de' ? 'de-DE' : 'en-GB';
 
   state.activity.forEach(entry => {
     const row = document.createElement('div');
@@ -1154,11 +1248,13 @@ function addActivity(text) {
 
     const stamp = document.createElement('span');
     stamp.className = 'activity-time';
-    stamp.textContent = entry.time;
+    stamp.textContent = entry.time.toLocaleTimeString(locale, {
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
 
     const label = document.createElement('span');
     label.className = 'activity-action';
-    label.textContent = entry.text;
+    label.textContent = t(entry.key, entry.params);
 
     row.append(stamp, label);
     log.append(row);
@@ -1174,8 +1270,11 @@ function devPreview() {
   const stick = $('#stick-left');
   if (stick) stick.classList.add('active');
 
-  ['Bestätigen · Enter', 'Nach rechts · RIGHT', 'Profil aktiv: Standard', 'Verbunden: Xbox Wireless Controller']
-    .forEach(text => addActivity(text));
+  const profileName = currentProfile() ? currentProfile().name : 'Standard';
+  addActivity('activity.triggered', { name: t('mapping.default.confirm'), action: 'Enter' });
+  addActivity('activity.triggered', { name: t('mapping.default.right'), action: 'RIGHT' });
+  addActivity('activity.profileActive', { name: profileName });
+  addActivity('activity.connected', { name: 'Xbox Wireless Controller' });
 }
 
 // ═══ Los ═══
