@@ -60,9 +60,12 @@ jobs:
       - name: Icons erzeugen
         run: node create-icons.js
 
+      # electron-builder veröffentlicht im CI-Modus von sich aus, sobald eine
+      # Draft-Release existiert. Für den reinen Build-Lauf ist das abgeschaltet,
+      # sonst bricht der Lauf ohne GH_TOKEN ab.
       - name: Installer und Portable bauen
         if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
-        run: npm run build
+        run: npm run build -- --publish never
 
       - name: Installer bauen und Release veröffentlichen
         if: startsWith(github.ref, 'refs/tags/v')
