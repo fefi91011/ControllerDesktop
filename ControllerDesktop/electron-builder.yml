@@ -1,0 +1,60 @@
+# electron-builder – Installer, portable Variante und Update-Kanal
+# Build: npm run build (Windows) · Publish: npm run publish
+
+appId: com.controllerdesktop.app
+productName: ControllerDesktop
+copyright: Copyright © 2026 ControllerDesktop
+
+directories:
+  output: release
+  buildResources: build
+
+# Nur Laufzeit-Dateien landen im Paket
+files:
+  - main.js
+  - preload.js
+  - src/**/*
+  - package.json
+  - "!src/icons/*.psd"
+  - "!**/*.map"
+
+asar: true
+# Native Eingabe-Bibliothek muss außerhalb des Archivs liegen
+asarUnpack:
+  - node_modules/@nut-tree-fork/libnut/**/*
+  - node_modules/@nut-tree-fork/libnut-win32/**/*
+  - node_modules/@nut-tree-fork/libnut-linux/**/*
+  - node_modules/@nut-tree-fork/libnut-darwin/**/*
+
+win:
+  icon: build/icon.png
+  executableName: ControllerDesktop
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowElevation: true
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: ControllerDesktop
+  uninstallDisplayName: ControllerDesktop
+  deleteAppDataOnUninstall: false
+  artifactName: ControllerDesktop-Setup-${version}.${ext}
+  # Update-Installation ohne Rückfragen des Installers
+  include: build/installer.nsh
+
+portable:
+  artifactName: ControllerDesktop-Portable-${version}.${ext}
+
+# Update-Quelle: GitHub Releases dieses Repositories
+publish:
+  provider: github
+  owner: fefi91011
+  repo: ControllerDesktop
+  releaseType: release

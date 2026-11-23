@@ -1,0 +1,84 @@
+name: Build und Release
+
+# Baut Installer und Portable-EXE unter Windows. Der Workflow muss im
+# Wurzelverzeichnis des Repositories liegen, sonst findet GitHub Actions ihn nicht.
+#
+# - Push auf master/main und manuelle Läufe: nur bauen, kein Release.
+#   Die Artefakte enthalten Setup-EXE, Portable-EXE, latest.yml und Blockmap.
+# - Tag v*: Version prüfen, bauen und als GitHub-Release veröffentlichen.
+#
+# Das Release enthält genau die Dateien, die electron-updater für Updates erwartet.
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ControllerDesktop
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: ControllerDesktop/package-lock.json
+
+      - name: Abhängigkeiten installieren
+        run: npm ci
+
+      # Läuft bewusst VOR Build und Upload: eine falsche Version soll den Lauf
+      # abbrechen, bevor ein Release mit falschem Inhalt veröffentlicht wird.
+      - name: Tag und Version prüfen
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $pkg = Get-Content package.json | ConvertFrom-Json
+          $expected = "v$($pkg.version)"
+          Write-Host "package.json: $($pkg.version)"
+          Write-Host "Tag: ${{ github.ref_name }}"
+          if ("${{ github.ref_name }}" -ne $expected) {
+            Write-Error "Tag ${{ github.ref_name }} passt nicht zu package.json ($expected)."
+            exit 1
+          }
+
+      - name: Icons erzeugen
+        run: node create-icons.js
+
+      - name: Installer und Portable bauen
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        run: npm run build
+
+      - name: Installer bauen und Release veröffentlichen
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: npm run publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Auch wenn das Veröffentlichen scheitert, bleiben die erzeugten Dateien
+      # als Build-Artefakt erhalten. Fehlende Dateien lassen den Lauf fehlschlagen.
+      - name: Artefakte sichern
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: controllerdesktop-windows
+          if-no-files-found: error
+          path: |
+            ControllerDesktop/release/*.exe
+            ControllerDesktop/release/latest.yml
+            ControllerDesktop/release/*.blockmap
